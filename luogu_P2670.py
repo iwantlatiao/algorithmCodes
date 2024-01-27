@@ -1,11 +1,11 @@
 n, m = map(int, input().split())
 
 # 地图的范围是(1,1)~(n,m)，围上一圈"?"
-x = [["?" for _ in range(m+2)]]
+x = [["?" for _ in range(m + 2)]]
 for i in range(n):
     s = list(input())
     x.append(["?"] + s + ["?"])
-x.append(["?" for _ in range(m+2)])
+x.append(["?" for _ in range(m + 2)])
 
 # (i,j) 是当前需要计算的坐标
 # (i+di,j+dj) 是正在扫描的坐标
