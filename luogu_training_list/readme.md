@@ -21,3 +21,17 @@ https://www.luogu.com.cn/training/106
 ## 1-2 sort
 
 https://www.luogu.com.cn/training/107
+
+- P1271 选举学生会
+- P1177	排序
+- P1923	求第 k 小的数
+- P1059 \[NOIP2006 普及组\] 明明的随机数	
+- P1093 \[NOIP2007 普及组\] 奖学金	
+- P1781 宇宙总统
+- P2676 \[USACO07DEC\] Bookshelf B
+- P1116 车厢重组
+- P1152 欢乐的跳
+- P1068 \[NOIP2009 普及组\] 分数线划定
+- P5143 攀爬者
+- P1104 生日
+- P1012 \[NOIP1998 提高组\] 拼数
