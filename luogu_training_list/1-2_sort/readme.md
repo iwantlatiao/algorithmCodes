@@ -19,9 +19,14 @@
 
 多字段排序
 
-
 ## P1781 宇宙总统
 
+大整数排序，对于没有高精度的语言可以用字符串找最大值
+
+```python
+num = ["123", "2345", "132", "66", "12345"]
+sorted(num, key=lambda x: (len(x[0]), x[0]), reverse=True)
+```
 
 ## P2676 \[USACO07DEC\] Bookshelf B
 

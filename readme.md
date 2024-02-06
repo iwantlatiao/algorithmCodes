@@ -6,7 +6,7 @@ Welcome to the Codes of Algorithms repository! This project aims to provide solu
 
 # 2. Contents
 
-This section will showcase the problems that have already been solved.
+This section will showcase the problem lists that have already been solved.
 
 ## 2.1 Luogu Training List
 
