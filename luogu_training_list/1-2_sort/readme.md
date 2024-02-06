@@ -30,6 +30,7 @@ sorted(num, key=lambda x: (len(x[0]), x[0]), reverse=True)
 
 ## P2676 \[USACO07DEC\] Bookshelf B
 
+排序
 
 ## P1116 车厢重组
 
