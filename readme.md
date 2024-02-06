@@ -2,7 +2,7 @@
 
 # 1. Introduction
 
-Welcome to the Codes of Algorithms repository! This project aims to provide solutions on various algorithm platforms such as LuoGu, LeetCode (not yet).
+Welcome to the Codes of Algorithms repository! This project aims to provide my solutions on various algorithm platforms such as LuoGu, LeetCode (not yet).
 
 # 2. Contents
 
