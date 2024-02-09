@@ -6,7 +6,7 @@
 
 ## P1177 排序
 
-排序模板题：[快速排序算法实现](https://oi-wiki.org/basic/quick-sort/)
+排序模板题：[快速排序算法实现](https://oi-wiki.org/basic/quick-sort/)；[单路、双路和三路快速排序](https://blog.csdn.net/weixin_45666566/article/details/108646880)
 
 在 python 中手动实现两路快排会 TLE，提交使用 sort 函数
 
@@ -43,6 +43,10 @@ sorted(num, key=lambda x: (len(x[0]), x[0]), reverse=True)
 排序模板题：[归并排序算法实现](https://oi-wiki.org/basic/merge-sort/)
 
 ## P1116 车厢重组
+
+求逆序对的题目，由于数据量不大，所以可以使用朴素/冒泡排序/插入排序计算逆序对
+
+本解法修改归并排序以计算逆序对。
 
 
 ## P1152 欢乐的跳
