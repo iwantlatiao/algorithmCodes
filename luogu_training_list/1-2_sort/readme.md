@@ -40,7 +40,7 @@ sorted(num, key=lambda x: (len(x[0]), x[0]), reverse=True)
 
 ## P2676 \[USACO07DEC\] Bookshelf B
 
-排序
+排序模板题：[归并排序算法实现](https://oi-wiki.org/basic/merge-sort/)
 
 ## P1116 车厢重组
 
