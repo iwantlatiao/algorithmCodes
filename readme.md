@@ -11,4 +11,5 @@ This section will showcase the problem lists that have already been solved.
 ## 2.1 Luogu Training List
 
 - 1-1 simulation
-- 1-2 sort (work in progress)
+- 1-2 sort
+- 1-3 bruteforce (work in progress)

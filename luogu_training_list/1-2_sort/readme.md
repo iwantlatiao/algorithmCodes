@@ -106,7 +106,7 @@ num_cmptokey = sorted(num_cmptokey, key=cmp_to_key(cmp))
 - 使用 `cmp` 函数用时 1.72s 
 - 重写 `__lt__` 方法用时 3.09s
 
-Extra:
+[Extra](https://stackoverflow.com/questions/63164064/unable-to-understand-lt-method):
 
 ```python
 class LargerNumKey(str):
