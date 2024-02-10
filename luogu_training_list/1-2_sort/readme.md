@@ -106,3 +106,37 @@ num_cmptokey = sorted(num_cmptokey, key=cmp_to_key(cmp))
 - 使用 `cmp` 函数用时 1.72s 
 - 重写 `__lt__` 方法用时 3.09s
 
+Extra:
+
+```python
+class LargerNumKey(str):
+    def __lt__(x, y):
+        return x+y > y+x
+        
+class Solution:
+    def largestNumber(self, nums):
+        largest_num = ''.join(sorted(map(str, nums), key=LargerNumKey))
+        return '0' if largest_num[0] == '0' else largest_num
+```
+
+`sorted` works by comparing two items at a time. For example, let's call them x and y. So somewhere sorted has to compare them, probably with a line that looks like: 
+
+`if x < y:`
+
+However, if you pass `sorted` a `key` argument, then it instead compares them more like this: 
+
+`if key(x) < key(y):`
+
+Since the example passes `LargerNumKey` as the `key`, it ends up looking like this after python looks up `key`: 
+
+`if LargerNumKey(x) < LargerNumKey(y):`
+
+When python then sees the `<` operator, it looks for the `__lt__` method, and because it finds it turns the statement into basically: 
+
+`if LargerNumKey(x).__lt__(LargerNumKey(y)):`
+
+Because `__lt__` is a method on an object, the object itself becomes the first argument (`x` in this case). Also, because `LargerNumKey` is a *subclass* of str it behaves exactly like a regular string, except for the `__lt__` method that you *overrode*.
+
+This is a useful technique when you want things to be sortable. You can use `__lt__` to allow your objects to be sorted in any way you wish. And if the objects you are sorting have the `__lt__` method defined, then you don't have to even pass `key`. But since we are working with different types of objects and don't want to use the default `__lt__` method, we use `key` instead.
+
+Note that while my example pretends that `sorted` is python code, it is in fact **usually c code**. However, since python is "pseudo code that runs", I think it conveys the idea accurately.
