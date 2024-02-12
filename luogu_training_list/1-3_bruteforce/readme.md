@@ -92,7 +92,7 @@ AB AC AD BC BD CD
 
 AA AB AC AD BB BC BD CC CD DD
 
-题目要求格式化字符串，可以使用 `str.format()` 方法
+题目要求[格式化字符串](https://docs.python.org/zh-cn/3/library/string.html#formatstrings)，可以使用 `str.format()` 方法
 
 ```python
 import itertools
@@ -106,7 +106,13 @@ for it in iter:
 
 ## P1706	全排列问题
 
+题目：输出排列 $A_n^n$ 的方案
+
+思路：同上题
+
 ## P1088	\[NOIP2004 普及组\] 火星人
+
+
 
 ## P3392	涂国旗
 
