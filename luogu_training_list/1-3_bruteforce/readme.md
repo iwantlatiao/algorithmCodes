@@ -48,11 +48,27 @@ $$
 
 思路：首先把 A B C 除以它们的最大公约数。然后把第一个三位数从 123 枚举到 987，判断能否被 A 整除。最后直接生成第二个和第三个数并判断各数位是否重复。
 
+找最大公约数的方法 `math.gcd(A, B)` 如果需要最小公倍数，则记住：$gcd(x,y)\times lcm(x,y) = xy$
+
 也可以使用 Dfs 搜索全排列
 
 ## P1036	\[NOIP2002 普及组\] 选数
 
+题目：从 n 个给定的整数中任选 k 个，计数这 k 个数的和为素数的情况。
 
+思路：深度优先搜索 `dfs(depth, choose, curSum):` 维护深度、总选择个数及数字之和
+
+判断素数的方法
+
+```python
+def isPrime(x):
+    if x <= 1:
+        return False
+    for i in range(2, 1 + int(math.sqrt(x))):
+        if x % i == 0:
+            return False
+    return True
+```
 
 ## P1157	组合的输出
 
