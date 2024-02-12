@@ -72,6 +72,38 @@ def isPrime(x):
 
 ## P1157	组合的输出
 
+题目：输出组合 $C_n^r$ 的方案，比如 $n=5$ $r=3$ 时为 123, 124, 125, 134, 135, 145, 234, 235, 245, 345，每个元素占三个字符的位置。
+
+思路：Python `itertools` 库中自带排列组合迭代器：
+
+- `product('ABCD', repeat=2)`：笛卡尔积
+
+AA AB AC AD BA BB BC BD CA CB CC CD DA DB DC DD
+
+- `permutations('ABCD', 2)`：长度 2 元组所有可能的排列，无重复元素
+
+AB AC AD BA BC BD CA CB CD DA DB DC
+
+- `combinations('ABCD', 2)`：长度 2 元组，有序，无重复元素
+
+AB AC AD BC BD CD
+
+- `combinations_with_replacement('ABCD', 2)`：长度 2 元组，有序，元素可重复
+
+AA AB AC AD BB BC BD CC CD DD
+
+题目要求格式化字符串，可以使用 `str.format()` 方法
+
+```python
+import itertools
+N, R = map(int, input().split())
+iter = itertools.combinations(range(N), R)
+for it in iter:
+    for j in range(R):
+        print("{:3d}".format(int(it[j]) + 1), end="")
+    print()
+```
+
 ## P1706	全排列问题
 
 ## P1088	\[NOIP2004 普及组\] 火星人
