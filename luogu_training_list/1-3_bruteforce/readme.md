@@ -129,7 +129,9 @@ for it in iter:
 
 ## P3654	First Step
 
+题目：输入一个 $R\times C$ 的矩阵，矩阵元素为 空地 . 和 障碍 #，求横或竖连续 K 空地的方案个数。
 
+思路：很容易可以想到 $O(R\times C\times K)$ 对每个点搜索一次是否符合，还可以 $O(R\times C)$ 分别对行和列搜索连续个数。若扫描有 t 个空地，且 t 大于 k，则方案数为 $t - k + 1$。
 
 ## P1217	\[USACO1.5\] 回文质数 Prime Palindromes
 
