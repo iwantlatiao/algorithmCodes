@@ -12,4 +12,5 @@ This section will showcase the problem lists that have already been solved.
 
 - 1-1 simulation
 - 1-2 sort
-- 1-3 bruteforce (work in progress)
+- 1-3 bruteforce
+- 1-4 recursion (work in progress)

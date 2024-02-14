@@ -3,5 +3,9 @@
       "editor.defaultFormatter": "ms-python.black-formatter",
       "editor.formatOnSave": true
     },
-    "black-formatter.importStrategy": "useBundled"
+    "black-formatter.importStrategy": "useBundled",
+    "black-formatter.args": [
+      "--line-length",
+      "88"
+    ]
   }
