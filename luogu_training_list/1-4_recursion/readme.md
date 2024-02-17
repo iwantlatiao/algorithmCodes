@@ -41,7 +41,7 @@ print(f[N][0])
 
 ### 3 卡特兰数
 
-[力扣上对卡特兰数的介绍](https://leetcode.cn/circle/discuss/lWYCzv/)
+[Leetcode 对卡特兰数的介绍](https://leetcode.cn/circle/discuss/lWYCzv/)
 
 [math173 对卡特兰数的介绍](http://lanqi.org/skills/10939/)
 
@@ -92,10 +92,10 @@ $$C_{2n}^{n}-C_{2n}^{n-1}=\frac{C_{2n}^{n}}{n+1}$$
 - 递归定义
  
 $$
-\begin{align}
-  C_0 & = C_1 =1 \\
-  C_n & = \sum_{k=0}^{n-1} C_kC_{n-1-k} = C_0C_{n-1}+C_1C_{n-2}+\ldots+C_{n-1}C_0, n\geq 2
-\end{align}
+\begin{cases}
+  C_0 = C_1 =1 \\
+  C_n = \sum_{k=0}^{n-1} C_kC_{n-1-k} = C_0C_{n-1}+C_1C_{n-2}+\ldots+C_{n-1}C_0, n\geq 2
+\end{cases}
 $$
 
 - 递推公式
@@ -127,9 +127,128 @@ $$\Delta C_n\sim\frac{4^n}{n^{\frac32}\sqrt{\pi}}$$
 
 ## P1928	外星密码
 
+要求对字符串解压缩，如 AC[3FUN] 解压为 ACFUNFUNFUN，可能有多重压缩。
+
+思路1. 纯模拟: 
+
+我们需要操作的对象是方括号内的部分, 对于方括号外面的内容不需要进行任何的操作. 因此要找到最内层的括号并进行处理.
+
+怎么找最内层的括号呢? 方法是从字符串末尾开始找第一个左括号, 然后从此往右找第一个右括号. 确定最内层括号后, 使用 `string.replace()` 把字符串进行替换, 这样一直重复直到没有括号为止, 就得到了最终的答案。
+
+```python
+def unzip(s):
+    s = s.strip("[]")
+    digit = 0
+    for t in s:
+        if "0" <= t and t <= "9":
+            digit += 1
+        else:
+            break
+    num = int(s[:digit])
+    residualS = s[digit:]
+    return residualS * num
+
+str = input()
+while True:
+    try:
+        left = str.rindex("[")
+        right = str.index("]", left)
+    except:
+        break
+    zipString = str[left : right + 1]
+    str = str.replace(zipString, unzip(zipString))
+print(str)
+```
+
+思路2. 递归: 
+
+对于 C++ 语言, 递归比较方便, 因为读入数据是按字符读入.
+
+```C++
+string read(){
+	int n; char c; string s="", s1;
+	
+  //一直读入字符，直到Ctrl+z
+	while (cin>>c){
+		if (c=='['){
+			cin>>n;//读入D
+			s1=read();//读入X
+			while (n--) s+=s1;//重复D次X
+		}
+		else{
+			if (c==']') return s;//返回X
+		  else s+=c;//如果不是'['和']'，那就是X的一个字符，所以加进X
+		}
+	}
+  return s;
+}
+int main() {cout<<read(); return 0;}
+```
+
+python 由于按行读入, 所以可以先读入整行, 然后把 `cin()` 实现为 `return s[i++]` , 对数字的读入也需要单独处理, 其他思路与 C++ 相同.
+
+```python
+str = input()
+index, strLen = 0, len(str)
+
+def getInput():
+    global index
+    if index < strLen:
+        t = str[index]
+        index += 1
+        return t
+    else:
+        return "-1"
+
+def getNumber():
+    global index
+    num = 0
+    while "0" <= str[index] and str[index] <= "9" and index < strLen:
+        num = (num << 3) + (num << 1) + int(str[index])
+        index += 1
+    return num
+
+def unzip():
+    ch = getInput()
+    s = ""
+    while ch != "-1":
+        if ch == "]":
+            return s
+        elif ch == "[":
+            mul = getNumber()
+            tmpStr = unzip()
+            s += tmpStr * mul
+        else:
+            s += ch
+        ch = getInput()
+    return s
+
+print(unzip())
+```
+经测试两种方法速度差不多
+
 ## P2437	蜜蜂路线
 
+![image of P2437](./image/P2437.png)
+
+思路: 数 n-m+1 个楼梯
+
 ## P1164	小A点菜
+
+口袋里有 M 元, 有 N 种菜, 每种菜 ai 元, 求刚好花完钱的点菜方法
+
+思路: 01背包. 设 $f[i][j]$ 表示前 i 种菜花了 j 元的点菜方法, 转移方程如下.
+
+$$
+f[i][j] = 
+\begin{cases}
+  f[i-1][j], j < cost[i] \\
+  f[i-1][j]+1, j = cost[i] \\
+  f[i-1][j]+f[i-1][j-cost[i]], j > cost[i]
+\end{cases}
+$$
+
+如果边界条件设为 $f[i][0] = 1$, 那么 $j \geq cost[i]$ 可以合并为一种情况.
 
 ## P1036	\[NOIP2002 普及组\] 选数
 
@@ -139,7 +258,7 @@ $$\Delta C_n\sim\frac{4^n}{n^{\frac32}\sqrt{\pi}}$$
 
 ## P3612	\[USACO17JAN\] Secret Cow Code S
 
-## P1259	黑白棋子的移动	
+## P1259	黑白棋子的移动
 
 ## P1010	\[NOIP1998 普及组\] 幂次方
 
