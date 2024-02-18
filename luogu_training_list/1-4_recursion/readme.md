@@ -265,16 +265,16 @@ $$
 2. 当墙的最后两列被两个 1x2 砖打横铺满时, 以这种状态结尾的方案数为 $f[N-2]$
 3. 当墙的最后两列被一个 L 填时, 会有一个空, 形状如下所示:
 
-    ![lShape](./image/P1990_p1.webp)
+    ![lShape](./image/P1990_p1.png)
 
     设 $g[N]$ 表示前 N 列已经填满, 第 N+1 列填了有一个空, 这种情况可以记为 $g[N-2]$ 由于 L 形砖块可上下翻转, 所以这种情况要算两次.
 
     所以 $f[N] = f[N-1] + f[N-2] + 2g[N-2]$, 如何维护 g 数组?
 
     1. 再使用一个 L 形砖块, 变成 $f[N-3]$
-        ![lShapepluslShape](./image/P1990_p2.webp)
+        ![lShapepluslShape](./image/P1990_p2.jpg)
     2. 使用一个 2x1 砖块打横填, 变成 $g[N-3]$
-        ![lShapepluslShape](./image/P1990_p3.webp)
+        ![lShapepluslShape](./image/P1990_p3.jpg)
 
     所以 $g[N]=g[N-1]+g[N-1]$.
 
