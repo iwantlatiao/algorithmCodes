@@ -10,8 +10,8 @@ This section will showcase the problem lists that have already been solved.
 
 ## 2.1 Luogu Training List
 
-- 1-1 simulation
-- 1-2 sort
-- 1-3 bruteforce
-- 1-4 recursion 
-- 1-5 greedy (work in progress)
+- 1-1 [simulation](./luogu_training_list/1-1_simulation/readme.md)
+- 1-2 [sort](./luogu_training_list/1-2_sort/readme.md)
+- 1-3 [bruteforce](./luogu_training_list/1-3_bruteforce/readme.md)
+- 1-4 [recursion](./luogu_training_list/1-4_recursion/readme.md)
+- 1-5 [greedy](./luogu_training_list/1-5_greedy/readme.md) (work in progress)
