@@ -4,9 +4,7 @@ This section will showcase the problems that have already been solved.
 
 # Contents
 
-## 1-1 simulation
-
-https://www.luogu.com.cn/training/106
+## 1-1 [simulation](https://www.luogu.com.cn/training/106)
 
 - P2670 扫雷游戏 
 - P1563 玩具谜题 
@@ -18,9 +16,7 @@ https://www.luogu.com.cn/training/106
 - P1249 最大乘积 
 - P1045 麦森数
 
-## 1-2 sort
-
-https://www.luogu.com.cn/training/107
+## 1-2 [sort](https://www.luogu.com.cn/training/107)
 
 - P1271 选举学生会
 - P1177	排序
@@ -36,7 +32,7 @@ https://www.luogu.com.cn/training/107
 - P1104 生日
 - P1012 \[NOIP1998 提高组\] 拼数
 
-## 1-3 bruteforce
+## 1-3 [bruteforce](https://www.luogu.com.cn/training/108)
 
 - P2241	统计方形（数据加强版）
 - P2089	烤鸡
@@ -53,7 +49,7 @@ https://www.luogu.com.cn/training/107
 - P2392	kkksc03考前临时抱佛脚
 - P2036	\[COCI2008-2009 #2\] PERKET
 
-## 1-4 recursion
+## 1-4 [recursion](https://www.luogu.com.cn/training/109)
 
 - P1255	数楼梯
 - P1002	\[NOIP2002 普及组\] 过河卒
@@ -71,7 +67,7 @@ https://www.luogu.com.cn/training/107
 - P1228	地毯填补问题
 - P1498	南蛮图腾
 
-## 1-5 greedy
+## 1-5 [greedy](https://www.luogu.com.cn/training/110)
 
 - P2240	部分背包问题
 - P1223	排队接水
