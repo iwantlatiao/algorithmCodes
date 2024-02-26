@@ -158,5 +158,5 @@ cython_debug/
 *.exe
 
 # Test file
-test.py
+test.*
 test/

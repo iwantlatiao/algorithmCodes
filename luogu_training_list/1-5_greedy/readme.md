@@ -167,6 +167,158 @@ Marry 乳业从一些奶农手中采购牛奶，并且每一位奶农为乳制�
 
 ### 思路
 
+from Wenoide
 
+我们用类似条形统计图的方式，在数轴上统计各个实力值出现的次数。题目中的“分组”，就可以理解为在方格中画线。即被同一条线相连的方格所对应的同学被分为一组。如：
+
+![alt text](images/image-1.png)
+
+我们规定，删除被画过线的方格，且总是在最下方一行画线：
+
+![alt text](images/image-2.png)
+
+至此，“分组”问题被转化成了一个“俄罗斯方块”式的问题。接下来，我们要研究如何使人数最少的组别人数最大，也就是如何使长度最短的线长度最大。
+
+令每一次画线都从最左边一列开始。每次都画到底，可以吗？
+
+显然，大多数情况下这不是最优解。最后可能会剩下一个方块“一枝独秀”：
+
+![alt text](images/image-3.png)
+
+出现这种情况的根本原因是什么？我们发现，“一枝独秀”的方块总是出现在高度较高的几列。
+
+我们需要改变画线的方式：如果右边一列的高度不低于当前列，则连接右边一列最下方的方块。反之，停止画线。这样，最靠左的一个“峰”相较其右边一列的高度差就不断减小，直到相同。如此反复。记录所画所有线的最短长度，即为答案。
+
+```python
+# P4447.py 3s
+
+def setLast():
+    global lastNum, lastPopu, sortList, i
+    lastNum, lastPopu = sortList[i][0], sortList[i][1]
+    sortList[i][1] -= 1
+
+    if sortList[i][1] == 0:
+        sortList.pop(i)
+        if i >= len(sortList):  # 到末尾了
+            resetLen(newLen=0)
+    else:
+        i += 1
+
+
+def resetLen(newLen):
+    global minLen, curLen, i
+    minLen = min(minLen, curLen)
+    curLen = newLen
+    i = 0
+
+
+MAXNUM = 100000
+N = int(input())
+ability = list(map(int, input().split()))
+
+tinymap = {}
+for item in ability:
+    if tinymap.get(item) == None:
+        tinymap[item] = 1
+    else:
+        tinymap[item] += 1
+
+listKey = list(tinymap.keys())
+listVal = list(tinymap.values())
+tinyList = [[listKey[i], listVal[i]] for i in range(len(listKey))]
+sortList = sorted(tinyList, key=lambda x: x[0])
+
+curLen, minLen = 0, MAXNUM
+i, lastNum, lastPopu = 0, 0, 0
+
+while len(sortList) > 0:
+    if minLen == 1:
+        print("1")
+        quit(0)
+
+    if i >= len(sortList):
+        resetLen(newLen=0)
+    # 队列的第一个
+    elif curLen == 0:
+        curLen = 1
+        setLast()
+    # 可以加入队列的条件:
+    # 1. 连续 2. 前一个人数 <= 后一个人数
+    elif lastNum + 1 == sortList[i][0] and lastPopu <= sortList[i][1]:
+        curLen += 1
+        setLast()
+    else:
+        resetLen(newLen=0)
+
+
+# minLen = min(minLen, curLen)
+print(minLen)
+```
+
+这样写的常数巨大, 因为 `dict` 不保证有序, 对列表做了很多删除操作. 找到了一份 1s 的代码如下. 这份代码与刚才的思路类似, 也是升序放进一个队伍, 但是不同点在于只扫描了每个 key 一次, 然后对每个 key 后满足条件的元素做操作, 暂时没有想到证明的方法.
+
+```python
+from collections import Counter
+def LI_():
+    return list(map(int, input().split()))
+def I_():
+    return int(input())
+if __name__ == "__main__":
+    n = I_()
+    a = LI_()
+    c = Counter(a)
+    ans = n
+    for k in sorted(c.keys()):
+        if c[k] == 0:
+            continue
+        # else: while c[k] > 0: 
+        # 再做下面的操作, 就和上面的代码思路相同
+        x = k
+        while c[x + 1] >= c[x]:
+            c[x] -= 1
+            x += 1
+        c[x] -= 1
+        ans = min(ans, x - k + 1)
+    print(ans)
+```
+
+事实上, 本题还可以用二分的方法解决. 首先对实力值排序. 然后维护两个数组: `siz` 表示每个组的大小; `q[x]` 表示第 x 组要想继续添加成员所需要的实力值. 很显然每次加入一个成员后要将 `q[i]++`. 
+
+怎么找 i 呢? 通过二分查找 `bisect` , 可以找到与当前成员实力值相等的组. 找到后判断是否和当前成员实力值相等, 相等则更新 q 数组, 否则在 q 中就找不到该值，需要开一个新的组. 还需判断是否超过总组数.
+
+```python
+from bisect import bisect
+
+
+MAXNUM = 100000
+N = int(input())
+a = list(map(int, input().split()))
+a.sort()
+
+# team = [[下一个队员的实力, 目前人数]]
+# team 在构造的过程中肯定是升序的
+team = [[a[0] + 1, 1]]
+for x in a[1:]:
+    i = bisect(team, x, key=lambda x: x[0])
+    i -= 1
+    if i < 0:
+        team.append([x + 1, 1])
+    elif team[i][0] != x:  # 当前的队伍都放不了
+        team.append([x + 1, 1])
+    else:
+        team[i][0] = x + 1
+        team[i][1] += 1
+
+ans = min(team, key=lambda x: x[1])
+print(ans[1])
+
+```
 
 ## P1080	\[NOIP2012 提高组\] 国王游戏
+
+恰逢 H 国国庆，国王邀请 $n$ 位大臣来玩一个有奖游戏。首先，他让每个大臣在左、右手上面分别写下一个整数，国王自己也在左、右手上各写一个整数。然后，让这 $n$ 位大臣排成一排，国王站在队伍的最前面。排好队后，所有的大臣都会获得国王奖赏的若干金币，每位大臣获得的金币数分别是：排在该大臣前面的所有人的左手上的数的乘积除以他自己右手上的数，然后向下取整得到的结果。
+
+国王不希望某一个大臣获得特别多的奖赏，所以他想请你帮他重新安排一下队伍的顺序，使得获得奖赏最多的大臣，所获奖赏尽可能的少。注意，国王的位置始终在队伍的最前面。
+
+### 思路
+
