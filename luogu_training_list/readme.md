@@ -82,3 +82,17 @@ This section will showcase the problems that have already been solved.
 - P4995	跳跳！
 - P4447	\[AHOI2018初中组\] 分组
 - P1080	\[NOIP2012 提高组\] 国王游戏
+
+## 1-6 [binarySearch](https://www.luogu.com.cn/training/111)
+
+- P2249	查找
+- P1102	A-B 数对
+- P1873	\[COCI 2011/2012 #5\] EKO / 砍树
+- P1024	\[NOIP2001 提高组\] 一元三次方程求解
+- P1678	烦恼的高考志愿
+- P2440	木材加工
+- P2678	\[NOIP2015 提高组\] 跳石头
+- P3853	\[TJOI2007\] 路标设置
+- P1182	数列分段 Section II
+- P1163	银行贷款
+- P3743	kotori的设备

@@ -15,3 +15,4 @@ This section will showcase the problem lists that have already been solved.
 - 1-3 [bruteforce](./luogu_training_list/1-3_bruteforce/readme.md)
 - 1-4 [recursion](./luogu_training_list/1-4_recursion/readme.md)
 - 1-5 [greedy](./luogu_training_list/1-5_greedy/readme.md) (work in progress)
+- 1-6 [binarySearch](./luogu_training_list/1-6_binarySearch/readme.md)
