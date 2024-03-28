@@ -153,7 +153,7 @@ BFS DFS 模板
 
 ### 思路
 
-
+[Python 字符串匹配常用api](https://blog.csdn.net/weixin_45642918/article/details/103784164)
 
 
 
