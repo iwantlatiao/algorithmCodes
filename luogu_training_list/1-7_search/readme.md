@@ -179,6 +179,55 @@ BFS DFS 模板
 
 [Python 字符串匹配常用api](https://blog.csdn.net/weixin_45642918/article/details/103784164)
 
+一些字符串的常见操作：
 
+- 字符串查找子串 `str.find(substr, start_pos)`
+- 字符串替换 `str.replace(old, new, count)`
+
+因为已知起点和终点，所以可以使用双向 bfs 进行搜索，然后使用 `dict` 记录已经出现过的字符串。由于 bfs 可以保证队列前端最优，所以对于每个方向都维护一个 `dict`，如果该方向的 `dict` 已经有当前搜索的字符串就跳过，如果对面方向的 `dict` 已经有当前搜索的字符串就说明找到方案。由于步数在 $10$ 以内，所以两边搜索深度在 $5$ 以内即可。
+
+```python
+def bfs():
+    # (str, num_of_transformation)
+    qA, qB = Queue(), Queue()
+    qA.put((A, 0)), qB.put((B, 0))
+    # 双向 bfs, 当规则有匹配字符串 且 深度 <= 5 才继续搜索
+    while qA.empty() == False or qB.empty() == False:
+        if qA.empty() == False:
+            strA, numA = qA.get()
+            for i in range(len(rules)):
+                posA = strA.find(rules[i][0])
+                while posA != -1:
+                    newstrA = strA[:posA] + strA[posA:].replace(rules[i][0], rules[i][1], 1)
+                    if mapA.get(newstrA) == None and numA + 1 <= 5:
+                        newnumA = numA + 1
+                        if mapB.get(newstrA) != None:
+                            return newnumA + mapB.get(newstrA)
+                        mapA[newstrA] = newnumA
+                        qA.put((newstrA, newnumA))
+                    posA = strA.find(rules[i][0], posA + 1)
+
+        if qB.empty() == False:
+            strB, numB = qB.get()
+            for i in range(len(rules)):
+                posB = strB.find(rules[i][1])
+                while posB != -1:
+                    newstrB = strB[:posB] + strB[posB:].replace(rules[i][1], rules[i][0], 1)
+                    if mapB.get(newstrB) == None and numB + 1 <= 5:
+                        newnumB = numB + 1
+                        if mapA.get(newstrB) != None:
+                            return newnumB + mapA.get(newstrB)
+                        mapB[newstrB] = newnumB
+                        qB.put((newstrB, newnumB))
+                    posB = strB.find(rules[i][1], posB + 1)
+
+    return -1
+```
 
 ## P1825	\[USACO11OPEN\] Corn Maze S
+
+有一个网格地图，存在多个双向传送装置，要求从起点到终点的最短距离。
+
+### 思路
+
+加一个对传送门的判断即可，是传送门就瞬移坐标判断，其他与常规搜索相同。
