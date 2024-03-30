@@ -115,3 +115,16 @@ This section will showcase the problems that have already been solved.
 - P1162	填涂颜色
 - P1032	\[NOIP2002 提高组\] 字串变换
 - P1825	\[USACO11OPEN\] Corn Maze S
+
+## 2-1 [LinearList](https://www.luogu.com.cn/training/113)
+
+- P3156	【深基15.例1】询问学号
+- P3613	【深基15.例2】寄包柜
+- P1449	后缀表达式
+- P1996	约瑟夫问题
+- P1160	队列安排
+- P1540	\[NOIP2010 提高组\] 机器翻译
+- P2058	\[NOIP2016 普及组\] 海港	
+- P1241	括号序列
+- P4387	【深基15.习9】验证栈序列
+- P2234	\[HNOI2002\] 营业额统计
