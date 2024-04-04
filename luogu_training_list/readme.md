@@ -128,3 +128,16 @@ This section will showcase the problems that have already been solved.
 - P1241	括号序列
 - P4387	【深基15.习9】验证栈序列
 - P2234	\[HNOI2002\] 营业额统计
+
+## 2-2 [binaryTree](https://www.luogu.com.cn/training/114)
+
+- P4715	【深基16.例1】淘汰赛
+- P4913	【深基16.例3】二叉树深度
+- P1827	[USACO3.4] 美国血统 American Heritage
+- P5076	【深基16.例7】普通二叉树（简化版）
+- P1364	医院设置
+- P1229	遍历问题
+- P1305	新二叉树
+- P1030	[NOIP2001 普及组] 求先序排列
+- P3884	[JLOI2009] 二叉树问题
+- P1185	绘制二叉树

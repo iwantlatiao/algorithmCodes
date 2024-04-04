@@ -81,4 +81,23 @@
 ### 思路
 
 - C++ 中可以使用 `lowerbound` 和 `map` 实现 $O(logn)$ 的插入和查询
-- Python 的 `dict` 原理是 Hash, 所以不能用二分查找. 本题年代久远, 可以用 `sorted` + 顺序查找, 时间复杂度 $O(n^2)$
+- Python 的 `dict` 原理是 Hash, 所以不能用二分查找. 本题年代久远, 可以用 `list` 维护一个有序列表, 插入时间复杂度 $O(n)$, 查找时间复杂度 $O(logn)$, 数据水所以也可以过.
+
+```python
+import sys
+input = sys.stdin.readline
+import bisect
+
+n = int(input())
+a = int(input())
+alist = [-1e7,a,1e7]
+ans = a
+for i in range(1,n):
+    a = int(input())
+    j = bisect.bisect_left(alist,a)
+    if alist[j] == a:
+        continue
+    ans += min(a-alist[j-1],abs(alist[j]-a))
+    alist.insert(j,a)
+print(ans)
+```
