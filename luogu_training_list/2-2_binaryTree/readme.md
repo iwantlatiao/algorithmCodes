@@ -97,9 +97,37 @@ index = {element: i for i, element in enumerate(inorder)}
 
 使用 Floyd 可以求出任意两点之间的距离, 实际上就是记录了任意点做根时任一点的深度. 然后枚举所有节点为根, 将当前节的权重乘以深度 (该点到根节点的距离) 即可. 时间复杂度 $O(n^3)$.
 
-### 思路 3. [带权树的重心](https://zhuanlan.zhihu.com/p/357938161)
+### 思路 3. 带权树的重心
 
+首先我们知道树的重心有一些良好的[性质](https://zhuanlan.zhihu.com/p/357938161), 根据重心的定义, 我们可以写出找无权树的重心的[代码 from oiwiki](https://oi-wiki.org/graph/tree-centroid/).
 
+```c++
+// 这份代码默认节点编号从 1 开始，即 i ∈ [1,n]
+int size[MAXN],    // 这个节点的「大小」（所有子树上节点数 + 该节点）
+    weight[MAXN],  // 这个节点的「重量」，即所有子树「大小」的最大值
+    centroid[2];   // 用于记录树的重心（存的是节点编号）
+
+void GetCentroid(int cur, int fa) {  // cur 表示当前节点 (current)
+  size[cur] = 1;
+  weight[cur] = 0;
+  for (int i = head[cur]; i != -1; i = e[i].nxt) {
+    if (e[i].to != fa) {  // e[i].to 表示这条有向边所通向的节点。
+      GetCentroid(e[i].to, cur);
+      size[cur] += size[e[i].to];
+      weight[cur] = max(weight[cur], size[e[i].to]);
+    }
+  }
+  weight[cur] = max(weight[cur], n - size[cur]);
+  if (weight[cur] <= n / 2) {  // 依照树的重心的定义统计
+    centroid[centroid[0] != 0] = cur;
+  }
+}
+```
+
+那么[有权树的重心](https://blog.csdn.net/zstuyyyyccccbbbb/article/details/108952302)怎么求呢?
+
+- 边权：其实和所有边为单位 1 的重心**一模一样**, 没有找到证明方式, 但画个图其实发现边权无法影响重心位置
+- 点权：把**最大的子树节点数**最少改成**最大点权块**最小
 
 
 
