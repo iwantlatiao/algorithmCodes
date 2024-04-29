@@ -24,3 +24,7 @@ This section will showcase the problem lists that have already been solved.
 
 - 2-1 [LinearList](./luogu_training_list/2-1_linearList/readme.md)
 - 2-2 [binaryTree](./luogu_training_list/2-2_binaryTree/readme.md) (work in progress)
+
+# 3. Learning material
+
+[algorithm learning - zhihu@pecco](https://zhuanlan.zhihu.com/p/105467597)
