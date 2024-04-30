@@ -118,7 +118,7 @@ void GetCentroid(int cur, int fa) {  // cur 表示当前节点 (current)
     }
   }
   weight[cur] = max(weight[cur], n - size[cur]);
-  if (weight[cur] <= n / 2) {  // 依照树的重心的定义统计
+  if (weight[cur] <= n / 2) {  // 依照树的重心的定义, 也可以最大的子树节点最少
     centroid[centroid[0] != 0] = cur;
   }
 }
