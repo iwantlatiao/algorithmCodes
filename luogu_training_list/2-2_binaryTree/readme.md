@@ -129,6 +129,48 @@ void GetCentroid(int cur, int fa) {  // cur 表示当前节点 (current)
 - 边权：其实和所有边为单位 1 的重心**一模一样**, 没有找到证明方式, 但画个图其实发现边权无法影响重心位置
 - 点权：把**最大的子树节点数**最少改成**最大点权块**最小
 
+于是我们只需要先 dfs 一次, 求出有权树的重心, 然后从重心再 dfs 一次求路径即可.
+
+```python
+def center(fa, u):
+    # size[u]: 以 1 为根, u 的树点权 = 当前点权 + 子树的点权
+    # ith edge = [to, weight, nextEdgeIndex]
+    size[u] = cow[u]
+
+    i = head[u]
+    while i != -1:
+        if edge[i][0] != fa:
+            center(u, edge[i][0])
+            size[u] += size[edge[i][0]]
+            maxSize[u] = max(maxSize[u], size[edge[i][0]])
+        i = edge[i][2]
+    
+    # 计算最大点权块
+    maxSize[u] = max(maxSize[u], totalCow - size[u])
+
+
+def dfs(fa, u):
+    i = head[u]
+    while i != -1:
+        if edge[i][0] != fa:
+            dis[edge[i][0]] = dis[u] + edge[i][1]
+            dfs(u, edge[i][0])
+        i = edge[i][2]
+
+# 随便找一个节点 dfs 一次找重心
+center(1, 1)
+
+# 选最大点权块最小的点 minIndex, 然后再 dfs 一次计算路径, 最后由边权和点权计算代价.
+...
+dfs(minIndex, minIndex)
+...
+
+```
+
+### 思路 4. 换根 DP
+
+带权树的重心只能解决部分问题, 如果遇到求最大代价 [CF1092F](https://www.luogu.com.cn/problem/CF1092F) 的就不好做了. 我们来看一看如何使用更为通用的换根 DP 解决这类问题.
+
 
 
 ## P1229	遍历问题

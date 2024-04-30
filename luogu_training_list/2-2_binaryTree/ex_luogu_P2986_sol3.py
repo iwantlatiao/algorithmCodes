@@ -1,9 +1,9 @@
 import sys
 
-# input = sys.stdin.readline
+input = sys.stdin.readline
 
-f = open("luogu_training_list/2-2_binaryTree/P2986_5.in")
-input = f.readline
+# f = open("luogu_training_list/2-2_binaryTree/P2986_5.in")
+# input = f.readline
 
 MAXN = 100000 + 5
 sys.setrecursionlimit(MAXN)
@@ -17,8 +17,8 @@ def center(fa, u):
     while i != -1:
         if edge[i][0] != fa:
             center(u, edge[i][0])
-            size[u] += cow[edge[i][0]]
-            maxSize[u] = max(maxSize[u], cow[edge[i][0]])
+            size[u] += size[edge[i][0]]
+            maxSize[u] = max(maxSize[u], size[edge[i][0]])
         i = edge[i][2]
     maxSize[u] = max(maxSize[u], totalCow - size[u])
 
@@ -37,7 +37,7 @@ totalCow = 0
 edge = []  # ith edge = [to, weight, nextEdgeIndex]
 head = [-1 for _ in range(MAXN)]  # 第 i 个点的第一条出边
 cow = [0 for _ in range(MAXN)]
-size = [0 for _ in range(MAXN)]  # 第 i 个点的树尺寸
+size = [0 for _ in range(MAXN)]  # 以 1 为根 第 i 个点的树尺寸
 maxSize = [0 for _ in range(MAXN)]  # 第 i 个点的子树大小最大值
 dis = [0 for _ in range(MAXN)]  # 第 i 个点到重心的距离
 
@@ -61,8 +61,6 @@ for i in range(2, N + 1):
         minSize = maxSize[i]
         minIndex = i
 
-print(minIndex)
-
 # 取重心点 然后跑一次 dfs
 dfs(minIndex, minIndex)
 ans = 0
@@ -71,4 +69,4 @@ for i in range(1, N + 1):
 
 print(ans)
 
-f.close()
+# f.close()

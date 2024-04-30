@@ -43,6 +43,10 @@ int main()
     for (int i=1,x,y,z;i<n;i++)
         scanf("%d%d%d",&x,&y,&z),add(x,y,z),add(y,x,z);
     treedp(1,1);
+
+    for (int i=1;i<=10;i++)
+        printf("maxs %d: %d\n", i, maxs[i]);
+
     int an=1;
     for (int i=2;i<=n;i++)
         if (maxs[i]<maxs[an])//求出最大点权块最小的点（这种树的重心）
