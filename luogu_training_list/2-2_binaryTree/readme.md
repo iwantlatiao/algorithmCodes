@@ -225,6 +225,17 @@ for i in range(N - 1):  # 最后一个肯定没有儿子
 
 ## P3884	[JLOI2009] 二叉树问题
 
+求一棵二叉树的深度（找最深的节点）、宽度（找节点最多的一层）和两个节点之间的距离。
+
+### 思路
+
+深度、宽度使用 DFS 即可求解。两点之间的距离可以使用 $O(n^3)$ 的 Floyd 算法，也可以通过 最近公共祖先（[LCA](https://oi-wiki.org/graph/lca/)） 求解。这里我们使用 LCA 进行求解。
+
+LCA 相关学习资料
+
+- [视频解释使用倍增算法解 LCA](https://www.bilibili.com/video/BV1N7411G7JD/) 
+- [倍增和 Tarjan 实现 LCA](https://www.cnblogs.com/TEoS/p/11376616.html)
+
 
 
 ## P1185	绘制二叉树
