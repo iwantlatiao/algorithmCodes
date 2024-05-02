@@ -300,4 +300,6 @@ $$2 * (depth[x] - depth[ansestor]) + (depth[y] - depth[ansestor])$$
 
 ## P1185	绘制二叉树
 
+![alt text](images/image-2.png)
 
+一个比较麻烦的画图题. 首先需要找规律得到树枝的长度, 然后需要得到每一层节点的位置.
