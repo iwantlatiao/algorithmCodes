@@ -141,3 +141,8 @@ This section will showcase the problems that have already been solved.
 - P1030	[NOIP2001 普及组] 求先序排列
 - P3884	[JLOI2009] 二叉树问题
 - P1185	绘制二叉树
+
+# Interesting Problems
+
+- [P1364](./2-2_binaryTree/readme.md/#p1364-医院设置) can use DP or barycenter to solve.
+- [P3884](./2-2_binaryTree//readme.md/#p3884-jloi2009-二叉树问题) is a templete of LCA.

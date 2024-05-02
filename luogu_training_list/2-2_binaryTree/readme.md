@@ -229,14 +229,74 @@ for i in range(N - 1):  # 最后一个肯定没有儿子
 
 ### 思路
 
-深度、宽度使用 DFS 即可求解。两点之间的距离可以使用 $O(n^3)$ 的 Floyd 算法，也可以通过 最近公共祖先（[LCA](https://oi-wiki.org/graph/lca/)） 求解。这里我们使用 LCA 进行求解。
+深度、宽度使用 DFS 即可求解。两点之间的距离可以使用 $O(n^3)$ 的 Floyd 算法，也可以通过 最近公共祖先（[LCA](https://oi-wiki.org/graph/lca/)） 求解。这里我们使用倍增求 LCA, 然后用LCA 得到答案。
 
 LCA 相关学习资料
 
 - [视频解释使用倍增算法解 LCA](https://www.bilibili.com/video/BV1N7411G7JD/) 
 - [倍增和 Tarjan 实现 LCA](https://www.cnblogs.com/TEoS/p/11376616.html)
 
+在建完边之后就可以使用倍增法求 LCA 了, 首先需要初始化倍增数组 f.
 
+```python
+# 对 f 数组进行递推, 步骤:
+# 1. 根节点入队, 存储深度 d
+# 2. 取出队头, 遍历所有出边 (跳过父亲的边) , 处理出边的点的 d 和 f ,
+#    其中 f[i][j] = f[ f[i][j-1] ][j-1]
+# 3. 重复第 2 步直到队空
+def bfsPreprocess():
+    q = deque()
+    # 1 号节点为根
+    q.append(1)
+    depth[1], width[1] = 1, 1
+    while len(q) > 0:
+        x = q.popleft()
+        i = head[x]
+        while i != -1:
+            y = edge[i].to
+            # 如果该点已经被遍历过 (父亲节点) 就跳过
+            if depth[y] == 0:
+                depth[y] = depth[x] + 1
+                width[depth[y]] += 1
+                f[y][0] = x
+                # 更精确的, 应该是 0 ~ int(log2(depth[y] - depth[root])) + 1
+                # 跳过头的结果都是 0
+                for j in range(1, lgn + 1):
+                    f[y][j] = f[f[y][j - 1]][j - 1]
+                q.append(y)
+            i = edge[i].next
+```
+
+然后使用二进制拆分求 LCA.
+
+```python
+# 求出两点 x, y 之间的 LCA, 步骤:
+# 1. 先让 d[x] < d[y], 如果不是就先交换
+# 2. 让 y 上移 (二进制拆分) 到与 x 相同的深度,
+#    若此时 x = y 就说明 LCA(x,y) = 当前节点
+# 3. 再用二进制拆分把 x 和 y 同时上移, 并且保证 x != y.
+#    完成该步后, x 和 y 一定在某个节点的两个子节点上,
+#    因此 LCA(x,y) = 他们的父亲节点
+def lca(x, y):
+    if depth[x] > depth[y]:
+        x, y = y, x
+    # 从 logn 到 0 上移
+    for i in range(lgn, -1, -1):
+        if depth[f[y][i]] >= depth[x]:
+            y = f[y][i]
+    if x == y:
+        return x
+    for i in range(lgn, -1, -1):
+        if f[x][i] != f[y][i]:
+            x, y = f[x][i], f[y][i]
+    return f[x][0]
+```
+
+由于题目中向根的边权是 2, 向叶的边权是 1, 所以最后两点之间的距离可以用 
+
+$$2 * (depth[x] - depth[ansestor]) + (depth[y] - depth[ansestor])$$ 
+
+得到.
 
 ## P1185	绘制二叉树
 
