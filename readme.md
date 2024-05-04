@@ -23,8 +23,10 @@ This section will showcase the problem lists that have already been solved.
 ### Data structure 1
 
 - 2-1 [LinearList](./luogu_training_list/2-1_linearList/readme.md)
-- 2-2 [binaryTree](./luogu_training_list/2-2_binaryTree/readme.md) (work in progress)
+- 2-2 [binaryTree](./luogu_training_list/2-2_binaryTree/readme.md)
+- 2-3 [set](./luogu_training_list/2-3_set/readme.md) (work in progress)
 
 # 3. Learning material
 
-[algorithm learning - zhihu@pecco](https://zhuanlan.zhihu.com/p/105467597)
+- [OI Wiki](https://oi-wiki.org/)
+- [algorithm learning - zhihu@pecco](https://zhuanlan.zhihu.com/p/105467597)

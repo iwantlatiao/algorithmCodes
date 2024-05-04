@@ -65,7 +65,7 @@ This section will showcase the problems that have already been solved.
 - P1259	黑白棋子的移动	
 - P1010	\[NOIP1998 普及组\] 幂次方
 - P1228	地毯填补问题
-- P1498	南蛮图腾
+- P1498	南蛮图腾 （画图题）
 
 ## 1-5 [greedy](https://www.luogu.com.cn/training/110)
 
@@ -133,14 +133,32 @@ This section will showcase the problems that have already been solved.
 
 - P4715	【深基16.例1】淘汰赛
 - P4913	【深基16.例3】二叉树深度
-- P1827	[USACO3.4] 美国血统 American Heritage
+- P1827	\[USACO3.4\] 美国血统 American Heritage
 - P5076	【深基16.例7】普通二叉树（简化版）
 - P1364	医院设置
 - P1229	遍历问题
 - P1305	新二叉树
 - P1030	[NOIP2001 普及组] 求先序排列
-- P3884	[JLOI2009] 二叉树问题
-- P1185	绘制二叉树
+- P3884	\[JLOI2009\] 二叉树问题
+- P1185	绘制二叉树 （画图题）
+
+## 2-3 [set](https://www.luogu.com.cn/training/115)
+
+- P1551	亲戚
+- P1536	村村通
+- P3370	【模板】字符串哈希
+- P3405	\[USACO16DEC\] Cities and States S
+- P5250	【深基17.例5】木材仓库
+- P5266	【深基17.例6】学籍管理
+- P1102	A-B 数对
+- P1918	保龄球
+- P1525	[NOIP2010 提高组] 关押罪犯
+- P1621	集合
+- P1892	\[BOI2003\] 团伙
+- P1955	\[NOI2015\] 程序自动分析
+- P4305	\[JLOI2011]\ 不重复数字
+- P3879	\[TJOI2010\] 阅读理解	
+- P2814	家谱
 
 # Interesting Problems
 
