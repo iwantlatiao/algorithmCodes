@@ -2,6 +2,43 @@
 
 ## P1551	亲戚
 
+给出某个亲戚关系图，求任意给出的两个人是否具有亲戚关系。
+
+规定 $x$ 和 $y$ 是亲戚，$y$ 和 $z$ 是亲戚，那么 $x$ 和 $z$ 也是亲戚。如果 $x$，$y$ 是亲戚，那么 $x$ 的亲戚都是 $y$ 的亲戚，$y$ 的亲戚也都是 $x$ 的亲戚。
+
+### 思路
+
+[并查集 @oiwiki](https://oi-wiki.org/ds/dsu/) 模板题。并查集是一种用于管理元素所属集合的数据结构，实现为一个森林，其中每棵树表示一个集合，树中的节点表示对应集合中的元素。本题要求实现两种操作，合并和查询。
+
+```python
+class Dsu:
+    # 初始时，每个元素都位于一个单独的集合，表示为一棵只有根节点的树。
+    # 方便起见，将根节点的父亲设为自己。
+    def __init__(self, size):
+        self.pa = list(range(size))
+        self.size = [1] * size
+
+    # 要合并两棵树，只需要将一棵树的根节点连到另一棵树的根节点。
+    # 合并时，选择哪棵树的根节点作为新树的根节点会影响未来操作的复杂度。
+    # 可以将节点较少或深度较小的树连到另一棵，以免发生退化。
+    def union(self, x, y):
+        x, y = self.find(x), self.find(y)
+        if x == y:
+            return
+        if self.size[x] < self.size[y]:
+            x, y = y, x
+        self.pa[y] = x
+        self.size[x] += self.size[y]
+    
+    # 查询需要沿着树向上移动，直至找到根节点。
+    # 由于查询过程中经过的每个元素都属于该集合，
+    # 可以将其直接连到根节点以加快后续查询。（路径压缩）
+    def find(self, x):
+        if self.pa[x] != x:
+            self.pa[x] = self.find(self.pa[x])
+        return self.pa[x]
+```
+
 ## P1536	村村通
 
 ## P3370	【模板】字符串哈希
