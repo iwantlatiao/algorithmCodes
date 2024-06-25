@@ -64,7 +64,7 @@ void merge_sort(int *a, int l, int r) {
 struct data {
   int a, b;
 
-  bool operator<(const data rhs) const {
+  bool operator<(const data& rhs) const {
     return (a == rhs.a) ? (b < rhs.b) : (a < rhs.a);
   }
 } da[1009];
