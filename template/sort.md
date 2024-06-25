@@ -57,3 +57,25 @@ void merge_sort(int *a, int l, int r) {
   for (int i = l; i < r; ++i) a[i] = tmp[i];
 }
 ```
+
+## custom cmp function
+
+```c++
+struct data {
+  int a, b;
+
+  bool operator<(const data rhs) const {
+    return (a == rhs.a) ? (b < rhs.b) : (a < rhs.a);
+  }
+} da[1009];
+
+// 在第一参数小于（即先序于）第二参数时返回 ​true
+bool cmp(const data u1, const data u2) {
+  return (u1.a == u2.a) ? (u1.b > u2.b) : (u1.a > u2.a);
+}
+
+// ...
+std::sort(da + 1, da + 1 + 10);  // 使用结构体中定义的 < 运算符，从小到大排序
+std::sort(da + 1, da + 1 + 10, cmp);  // 使用 cmp 函数进行比较，从大到小排序
+std::stable_sort(da + 1, da + 1 + 10);  // 保证相等元素排序后的相对位置与原序列相同。
+```
