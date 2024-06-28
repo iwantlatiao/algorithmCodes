@@ -31,3 +31,12 @@ This section will showcase the problem lists that have already been solved.
 - [OI Wiki](https://oi-wiki.org)
 - [algorithm learning - zhihu@pecco](https://zhuanlan.zhihu.com/p/105467597)
 - [acwing](https://www.acwing.com)
+
+# 4. useful template
+
+## 4.1 acwing
+
+- [1. basic](https://www.acwing.com/blog/content/277/)
+- [2. data structure](https://www.acwing.com/blog/content/404/)
+- [3. graph](https://www.acwing.com/blog/content/405/)
+- [4. math](https://www.acwing.com/blog/content/406/)
