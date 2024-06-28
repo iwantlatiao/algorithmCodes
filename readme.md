@@ -28,5 +28,6 @@ This section will showcase the problem lists that have already been solved.
 
 # 3. Learning material
 
-- [OI Wiki](https://oi-wiki.org/)
+- [OI Wiki](https://oi-wiki.org)
 - [algorithm learning - zhihu@pecco](https://zhuanlan.zhihu.com/p/105467597)
+- [acwing](https://www.acwing.com)
