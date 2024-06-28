@@ -3,6 +3,7 @@
 ## quick sort
 
 ```c++
+// from oiwiki
 template <typename T>
 int Paritition(T A[], int low, int high) {
   int pivot = A[low];
@@ -32,6 +33,7 @@ void QuickSort(T A[], int len) {
 ## merge sort
 
 ```c++
+// from oiwiki
 void merge(const int *a, size_t aLen, const int *b, size_t bLen, int *c) {
   size_t i = 0, j = 0, k = 0;
   while (i < aLen && j < bLen) {
@@ -61,6 +63,7 @@ void merge_sort(int *a, int l, int r) {
 ## custom cmp function
 
 ```c++
+// from oiwiki
 struct data {
   int a, b;
 
