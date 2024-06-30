@@ -26,6 +26,10 @@ This section will showcase the problem lists that have already been solved.
 - 2-2 [binaryTree](./luogu_training_list/2-2_binaryTree/readme.md)
 - 2-3 [set](./luogu_training_list/2-3_set/readme.md) (work in progress)
 
+## 2.2 Advanced Guide to Algorithm Contest
+
+- 0x00 [Basic Algorithm](./AGAC/0x00/)
+
 # 3. Learning material
 
 - [OI Wiki](https://oi-wiki.org)
