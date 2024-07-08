@@ -4,7 +4,7 @@
       "editor.formatOnSave": true
     },
     "[cpp]": {
-      "editor.formatOnSave": true
+      "editor.formatOnSave": false
     },
     "black-formatter.importStrategy": "useBundled",
     "black-formatter.args": [
