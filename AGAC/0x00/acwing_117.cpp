@@ -4,6 +4,8 @@ using namespace std;
 
 deque<int> cards[15];
 char c;
+int ans = 0, now, back;
+int bucket[15];
 
 int main() {
     for (int i = 1; i <= 13; i++) {
@@ -19,12 +21,19 @@ int main() {
     }
 
     while (cards[13].size() > 0) {
-        int now = cards[13].front();
+        now = cards[13].front();
         cards[13].pop_front();
 
-        if (now==13) continue;
-        
+        while (now != 13) {
+            cards[now].push_front(now);
+            if (++bucket[now] >= 4) ++ans;  // 这张牌翻开且放到最前
+
+            back = cards[now].back();  // 从末尾抽牌
+            cards[now].pop_back();
+            now = back;
+        }
     }
+    cout << ans;
 
     return 0;
 }
