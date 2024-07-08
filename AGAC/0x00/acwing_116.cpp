@@ -19,31 +19,26 @@ int getNum(int x, int y) {
 
 // 把坐标 (x,y) 的反转
 void turnOne(int x, int y) {
-    if (g[x][y] == '+')
-        g[x][y] = '-';
-    else
-        g[x][y] = '+';
+    if (g[x][y] == '+') g[x][y] = '-';
+    else g[x][y] = '+';
 }
 
 // 把 x 行 y 列 的反转
 void turn(int x, int y) {
-    for (int i = 0; i < 4; i++)
-        turnOne(x, i), turnOne(i, y);
+    for (int i = 0; i < 4; i++) turnOne(x, i), turnOne(i, y);
     turnOne(x, y);
 }
 
 bool allOpen() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (g[i][j] == '+')
-                return false;
+            if (g[i][j] == '+') return false;
     return true;
 }
 
 int main() {
     for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            cin >> g[i][j];
+        for (int j = 0; j < 4; j++) cin >> g[i][j];
 
     vector<Node> res;  // 最终方案
 
@@ -56,13 +51,11 @@ int main() {
                 if (op & 1 << getNum(i, j))
                     turn(i, j), now.push_back(Node(i, j));
 
-        if (allOpen() && (res.empty() || res.size() > now.size()))
-            res = now;
+        if (allOpen() && (res.empty() || res.size() > now.size())) res = now;
 
         memcpy(g, tmp, sizeof(tmp));
     }
 
     cout << res.size() << endl;
-    for (auto op : res)
-        cout << op.x + 1 << " " << op.y + 1 << endl;
+    for (auto op : res) cout << op.x + 1 << " " << op.y + 1 << endl;
 }
