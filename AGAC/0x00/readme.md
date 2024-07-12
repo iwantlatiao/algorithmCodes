@@ -41,5 +41,6 @@ B(n - 1)        B(n - 1)
 
 ## [119. 袭击](acwing_119.cpp)
 
-- 原始的 [平面最近点对问题](https://oi-wiki.org/geometry/nearest-points/) 可见 [洛谷P7883 平面最近点对](https://www.luogu.com.cn/problem/P7883)
+- 原始的 [平面最近点对问题](https://oi-wiki.org/geometry/nearest-points/) 可见 [洛谷P7883 平面最近点对](https://www.luogu.com.cn/problem/P7883)。
+- 如果选点后内部再快速排序，复杂度为两个 `log`。然而第一次按 `xy` 排序后选完点就不需要这个排序结果了，所以可以内部重新按 `y` 归并排序，复杂度变为一个 `log`。
 - 本题为分为两组的平面最近点对。
