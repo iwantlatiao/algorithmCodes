@@ -52,7 +52,7 @@ void solve(int l, int r) {
     // 1. nloglogn 写法
     int k = 0, mid = (l + r) >> 1;
     solve(l, mid), solve(mid + 1, r);
-    for (int i = l; i <= r; i++)
+    for (int i = l; i <= r; i++)  // 不够快，更快的方法是左右各取 6 个点直接算
         if (abs(a[i].x - a[mid].x) < mindis_sqrt) tmp[k++] = a[i];
     sort(tmp, tmp + k, cmp_y);
     for (int i = 0; i < k; i++)
