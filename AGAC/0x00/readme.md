@@ -73,3 +73,9 @@ bool check(int len) {
     return false;
 }
 ```
+
+## [122. 糖果传递](https://www.acwing.com/problem/content/124/)
+
+- 本题为环形纸牌均分问题模板，类似题目 [acwing105七夕祭](https://www.acwing.com/problem/content/107/)
+- [思路](https://www.acwing.com/solution/content/41677/)在于如何把纸牌均分问题转化为前缀和，以及如何把环形的问题变为链式的问题。
+- 涉及到求中位数，其实有 $O(n)$ 算法（BFPTR），不过直接排序也可以。
