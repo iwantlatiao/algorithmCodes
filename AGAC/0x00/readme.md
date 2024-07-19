@@ -58,4 +58,18 @@ B(n - 1)        B(n - 1)
 
 - 本题给定 `N` 个平面上的点（其实是 `1x1` 的小正方形），求能包含 `C` 个点的最小的正方形。坐标绝对值小于 `1e4`，点数小于 `500`。
 - [思路](https://www.acwing.com/solution/content/1091/)：首先直接遍历坐标不可行，但是看点数不多，可以先离散化然后再用二维前缀和做二分判定。
-- 本题还有一个细节，点是有大小的。所以在算正方形边长的时候需要加一。
+- 本题还有一个细节，点是有大小的。所以在算正方形边长的时候需要加一。具体判断如下
+
+```c++
+bool check(int len) {
+    // 找第一个不在 len 区间内的 x1 与 y1，然后用二维前缀和判定可行性
+    for (int x1 = 0, x2 = 1; x2 < numbers.size(); x2++) {
+        while (numbers[x2] - numbers[x1 + 1] + 1 > len) x1++;
+        for (int y1 = 0, y2 = 1; y2 < numbers.size(); y2++) {
+            while (numbers[y2] - numbers[y1 + 1] + 1 > len) y1++;
+            if (sum[x2][y2] - sum[x1][y2] - sum[x2][y1] + sum[x1][y1] >= C) return true;
+        }
+    }
+    return false;
+}
+```
