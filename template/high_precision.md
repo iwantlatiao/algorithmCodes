@@ -20,11 +20,24 @@ vector<int> add(vector<int> &A, vector<int> &B)
     if (t) C.push_back(t);
     return C;
 }
+
+for(int i=a.size()-1;i>=0;i--)A.push_back(a[i]-'0');
+for(int i=b.size()-1;i>=0;i--)B.push_back(b[i]-'0');
+auto C=add(A,B);
+for(int i=C.size()-1;i>=0;i--)cout<<C[i];
 ```
 
 ## 减
 
 ```c++
+bool cmp(vector<int> &A,vector<int> &B)
+{
+    if(A.size()!=B.size())return A.size()>B.size();
+    else{ for(int i=A.size()-1;i>=0;i--)
+            if(A[i]!=B[i])return A[i]>B[i];
+          return 1;}
+}
+
 // from acwing C = A - B, 满足A >= B, A >= 0, B >= 0
 vector<int> sub(vector<int> &A, vector<int> &B)  
 {
@@ -34,13 +47,21 @@ vector<int> sub(vector<int> &A, vector<int> &B)
         t = A[i] - t;
         if (i < B.size()) t -= B[i];
         C.push_back((t + 10) % 10);
-        if (t < 0) t = 1;
-        else t = 0;
+        if (t < 0) t = 1; else t = 0;
     }
 
     while (C.size() > 1 && C.back() == 0) C.pop_back();
     return C;
 }
+
+if(cmp(A,B)){
+    auto C=subtraction(A,B);
+    for(int i=C.size()-1;i>=0;i--)cout<<C[i];
+} else {
+    auto C=subtraction(B,A); cout<<"-";
+    for(int i=C.size()-1;i>=0;i--)cout<<C[i];
+}
+
 ```
 
 ## 乘
@@ -61,9 +82,12 @@ vector<int> mul(vector<int> &A, int b)
     }
 
     while (C.size() > 1 && C.back() == 0) C.pop_back();
-
     return C;
 }
+
+for(int i=a.size()-1;i>=0;i--)A.push_back(a[i]-'0');
+auto C=multiplication(A,b);
+for(int i=C.size()-1;i>=0;i--)cout<<C[i];
 ```
 
 ## 除
@@ -85,4 +109,9 @@ vector<int> div(vector<int> &A, int b, int &r)
     while (C.size() > 1 && C.back() == 0) C.pop_back();
     return C;
 }
+
+for(int i=a.size()-1;i>=0;i--)A.push_back(a[i]-'0');
+int r=0; auto C=division(A,b,r);
+for(int i=C.size()-1;i>=0;i--)cout<<C[i];
+
 ```
