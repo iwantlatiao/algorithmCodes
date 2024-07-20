@@ -90,3 +90,6 @@ bool check(int len) {
 所以本题分别用两次 `sort` 求得 `y` 和 `x1，x2+1，..., xn+n-1` 的中位数，然后计算次数即可。
 
 ## [124. 数的进制转换](https://www.acwing.com/problem/content/126/)
+
+- 本题要求把数从 A 进制转换为 B 进制，需要用高精度。
+- 一般想法是先从 A 进制
