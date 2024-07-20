@@ -1,7 +1,11 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-int main() {
+int T, a, b;
+string a_line, b_line;
 
+int main() {
+    
     return 0;
 }
