@@ -79,3 +79,14 @@ bool check(int len) {
 - 本题为环形纸牌均分问题模板，类似题目 [acwing105七夕祭](https://www.acwing.com/problem/content/107/)
 - [思路](https://www.acwing.com/solution/content/41677/)在于如何把纸牌均分问题转化为前缀和，以及如何把环形的问题变为链式的问题。
 - 涉及到求中位数，其实有 $O(n)$ 算法（BFPTR），不过直接排序也可以。
+
+## [123. 士兵](https://www.acwing.com/problem/content/125/)
+
+- 本题要求通过移动士兵使得所有士兵的 `x` 坐标相邻，`y` 坐标相同。
+- 直觉可以得到 `y` 坐标用 `y` 的中位数，如果 `x` 坐标也能用中位数，那就可以分别求中位数得到答案了。但 `x` 坐标相邻如何[证明](https://www.acwing.com/solution/content/2392/)是用 `x` 的中位数呢？
+
+假设所有 `x` 坐标从左到右排序 `x1, x2, ... xn`，且排序后最左边坐标为 `a`，那么移动次数的表达式为 `|x1-a|, |x2-(a+1)|, ..., |xn-(a+(n-1))|`。
+整理可得需要让这个式子的和最小 `|(x1)-a|, |(x2+1)-a|, ..., |(xn+n-1)-a|`，所以当 `a` 为 `x1，x2+1，..., xn+n-1` 的中位数时取得最小。
+所以本题分别用两次 `sort` 求得 `y` 和 `x1，x2+1，..., xn+n-1` 的中位数，然后计算次数即可。
+
+## [124. 数的进制转换](https://www.acwing.com/problem/content/126/)
