@@ -92,4 +92,7 @@ bool check(int len) {
 ## [124. 数的进制转换](https://www.acwing.com/problem/content/126/)
 
 - 本题要求把数从 A 进制转换为 B 进制，需要用高精度。
-- 一般想法是先从 A 进制
+- 一般想法是先从 A 进制转为十进制，再从十进制转为 B 进制，但其实可以用短除法直接从 A 转到 B。
+
+## [125. 耍杂技的牛](https://www.acwing.com/problem/content/description/127/)
+
