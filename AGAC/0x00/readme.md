@@ -96,3 +96,6 @@ bool check(int len) {
 
 ## [125. 耍杂技的牛](https://www.acwing.com/problem/content/description/127/)
 
+## [126. 最大的和](https://www.acwing.com/problem/content/description/128/)
+
+## [127. 任务](https://www.acwing.com/problem/content/description/129/)
