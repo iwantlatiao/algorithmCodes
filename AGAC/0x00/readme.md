@@ -96,6 +96,8 @@ bool check(int len) {
 
 ## [125. 耍杂技的牛](https://www.acwing.com/problem/content/description/127/)
 
+- 和国王游戏的分析过程差不多，最后的结论是按照 `w+s` 排序。
+
 ## [126. 最大的和](https://www.acwing.com/problem/content/description/128/)
 
 ## [127. 任务](https://www.acwing.com/problem/content/description/129/)
