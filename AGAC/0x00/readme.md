@@ -100,4 +100,7 @@ bool check(int len) {
 
 ## [126. 最大的和](https://www.acwing.com/problem/content/description/128/)
 
+- 本题求 `n*n` 的矩阵中的最大子矩阵和。朴素做法枚举左上和右下两个端点，然后用二维前缀和，时间复杂度为 `O(n^4)` 。
+- 可以将本题枚举两个点转化为枚举上下两个边界，然后转化为一维前缀和，这样的时间复杂度就是 `O(n^3)` 了。
+
 ## [127. 任务](https://www.acwing.com/problem/content/description/129/)
