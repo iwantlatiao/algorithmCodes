@@ -1,0 +1,16 @@
+# 《算法竞赛进阶指南》总结
+
+- [acwing 题库](https://www.acwing.com/activity/content/6/)
+
+## [0x00 基本算法](./0x00/readme.md)
+
+## [0x10 基本数据结构](./0x10/readme.md)
+
+- 0x11 [栈](./0x10/0x11/readme.md)
+- 0x12 队列
+- 0x13 链表与邻接表
+- 0x14 Hash
+- 0x15 字符串
+- 0x16 Trie
+- 0x17 二叉堆
+- 0x18 总结与练习
