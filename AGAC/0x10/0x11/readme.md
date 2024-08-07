@@ -13,6 +13,7 @@
 
 ## AcWing 129. 火车进栈
 
+- 见 [NOIP 2003 栈](../../../luogu_training_list/1-4_recursion/readme.md)
 
 ## AcWing 130. 火车进出栈问题
 
