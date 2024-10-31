@@ -57,7 +57,24 @@ bool dfs(int stick, int cab, int start) {
 
 ### 思路
 
+[@random_srand](https://www.acwing.com/solution/content/31876/)
 
+记最底层为 $m$，则有表面积和体积公式：
+
+$$
+S_{total} = \sum_{i=1}^{m}(2\pi R_i H_i) \\
+V_{total} = \sum_{i=1}^{m}(\pi R_i^2 H_i)
+$$
+
+优化搜索顺序：层间从下到上；层内先枚举半径再枚举高，从大到小
+
+可行性剪枝：记总体积为 $n$，当前层 $u$，第 $u$ 层的体积为 $V_u$，半径 $R_u$，体积 $V_u$，第 $m$ 层到第 $u$ 层的体积和为 $V$。
+
+1. 半径限制：最小取值应该是当前层号，最大取值取决于下一层半径减一或当前层体积最大值除高度最小值。
+
+$$u\leq R_u\leq min\{R_{u+1}-1,\sqrt{\frac{n-min\sum_{i=1}^{u-1}V_i-V}u}\}$$
+
+2. 高度限制：最小取值应该是当前层号，最大取值取决于下一层高度减一或当前层体积最大值除底面积最小值。
 
 
 
