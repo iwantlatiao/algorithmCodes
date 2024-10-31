@@ -9,6 +9,58 @@
 - 对于每行、每列、每个九宫格分别用一个 9 位二进制数代表哪些数还可以填（二进制的与运算，然后用 lowbit 取能填的数字）
 - 填上（删去）某个数后就要对二进制数的某位改成零（一）
 
+# 剪枝
+
+## acwing 167 木棒
+
+乔治拿来一组等长的木棒，将它们随机地砍断，使得每一节木棍的长度都不超过 50 个长度单位。然后他又想把这些木棍恢复到为裁截前的状态，但忘记了初始时有多少木棒以及木棒的初始长度。
+
+请你设计一个程序，帮助乔治计算木棒的可能最小长度。每一节木棍的长度都用大于零的整数表示。
+
+### 思路
+
+[@tonngw](https://www.acwing.com/solution/content/121003/)
+
+剪枝策略：
+
+1. sum % length = 0
+2. 木棍长度降序排序，以组合方式枚举搜索
+3. 如果当前长度木棍没有搜到方案，跳过该长度
+4. 如果木棒的第一根木棍就搜索失败，则一定搜不到方案。（交换可证）
+5. 如果木棒的最后一根木棍搜索失败，则一定搜不到方案。（贪心可证）
+
+```c++
+// 正在拼第 stick 根木棍，该木棍当前长度 cab，从 start 开始枚举木棍序号 
+bool dfs(int stick, int cab, int start) {
+    if (stick > cnt) return true;  // 全拼好了
+    if (cab == nowlen) return dfs(stick + 1, 0, 1);  // 拼下一根
+
+    int fail = 0;  // 上一根失败的长度
+    for (int i = start; i <= n; i++) {
+        if (!vis[i] && fail != sticks[i] && cab + sticks[i] <= nowlen) {
+            vis[i] = true;
+            if(dfs(stick, cab + sticks[i], i + 1)) return true;
+            vis[i] = false; fail = sticks[i];
+            if (cab == 0 || cab + sticks[i] == nowlen) return false;
+        }
+    }
+
+    return false;
+}
+```
+
+## acwing 168 生日蛋糕
+
+制作一个体积为 $N\pi$ 的 $M$ 层生日蛋糕，每层都是一个圆柱体。设从下往上数第 $i$ 层蛋糕是半径为 $Ri$，高度为 $Hi$ 的圆柱。当 $i<M$ 时，要求 $Ri>Ri+1$ 且 $Hi>Hi+1$。
+
+我们希望蛋糕外表面（最下一层的下底面除外）的面积 $Q$ 最小。令 $Q=S\pi$ ，请编程对给出的 $N$ 和 $M$，找出蛋糕的制作方案（适当的 $Ri$ 和 $Hi$ 的值），使 $S$ 最小。除 $Q$ 外，以上所有数据皆为正整数。
+
+### 思路
+
+
+
+
+
 # 广搜
 
 ## acwing 174 推箱子
