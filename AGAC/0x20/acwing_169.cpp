@@ -183,7 +183,7 @@ bool dfs(int cnt) {
     memcpy(bstate2[cnt], state, sizeof state);
     for (int i = state[x][y]; i != 0; i -= lowbit(i)) {
         memcpy(state, bstate2[cnt], sizeof state);  // 还原上一个状态
-        draw(x, y, twos[lowbit(x)]);  // 修改多个 state 状态和 str[x][y]
+        draw(x, y, twos[lowbit(i)]);  // 修改多个 state 状态和 str[x][y]
         if (dfs(cnt - 1)) return true;
     }
 
