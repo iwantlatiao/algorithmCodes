@@ -146,6 +146,42 @@ void dfs(int u, int v, int s) {
 4. 对于每个16宫格，同2；
 5. 每次选择空格时，选择备选方案(能填的字母数量)最少的格子来填。
 
+## acwing 170 加成序列
+
+满足如下条件的序列 X（序列中元素被标号为 1~m）被称为“加成序列”：
+
+1. $X[1] = 1$，$X[m] = n$
+2. $X[1]<X[2]<...<X[m]$
+3. 对于每个 $k$ $(2\leq k\leq m)$ 都存在两个整数 $i$ 和 $j$ $(1\leq i, j \leq k-1)$ $i$ 和 $j$ 可相等，使得 $X[k]=X[i]+X[j]$。
+
+### 思路
+
+采用bfs的话，queue会迅速变大，是几何级增长的，代码会MLE。之所以使用dfs+限制深度来模拟bfs（迭代加深搜索），就是怕空间不足。（@糖豆）
+
+```c++
+// 用 maxu 限制最大搜索深度
+bool dfs(int u, int maxu) {
+    if (u == maxu) return ans[u] == n;
+
+    bool vis[N] = {false};
+    for (int i = u; i >= 1; i--)
+        for (int j = i; j >= 1; j--) {
+            int s = ans[i] + ans[j];
+            if (vis[s] || s <= ans[u] || s > n) continue;
+
+            vis[s] = true;
+            ans[u + 1] = s;
+
+            if (dfs(u + 1, maxu)) return true;
+        }
+    return false;
+}
+```
+
+对于大测试样例（$n < 10000$），还需要增加一个剪枝。由于 $ans[i] <= ans[i-1] * 2$，如果当前已知 $ans[u]$，则后面最多还有 $maxu - u$ 项。若 $ans[u] * 2 ^ (maxu - u) < n$ 则说明肯定找不到答案。
+
+ex：还有一个典型题 [P1763 埃及分数](https://www.luogu.com.cn/problem/P1763) 但是因为有太多 hack 数据所以实际变成了一道数学题。
+
 # 广搜
 
 ## acwing 174 推箱子
