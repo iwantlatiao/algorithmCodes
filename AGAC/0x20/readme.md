@@ -249,6 +249,62 @@ ex：还有一个典型题 [P1763 埃及分数](https://www.luogu.com.cn/problem
 
 # 广搜
 
+## acwing 172 立体推箱子
+
+操作一个 1×1×2 的长方体，从起点运到终点。典型的走地图问题。
+
+### 思路
+
+广搜是逐层遍历搜索树的算法，所有状态按照入队的先后顺序具有层次单调性。如果每一次扩展对应着一步，那么当一个状态第一次入队（被访问）时，就得到了从起始状态到该状态的最小步数。
+
+在写广搜时，有一些常用的小技巧。
+
+1. 使用常数数组保存沿着不同方向运动的变化情况，减少 if 语句的使用
+2. 队列可以用头文件的 queue 实现，queue 也支持结构体，在入队时可以直接 `q.push( (...){...} )`。
+
+```c++
+struct State {int x, y, lie;};
+bool check(int x, int y) {...}
+int bfs(State start, State end) {
+    queue<State> q;
+    memset(dist, -1, sizeof dist);
+    dist[start.x][start.y][start.lie] = 0;
+    q.push(start);
+
+    int d[3][4][3] = {...};
+
+    while (q.size()) {
+        auto t = q.front(); q.pop();
+
+        for (int i = 0; i < 4; i++) {
+            State next = {t.x + d[t.lie][i][0], t.y + d[t.lie][i][1], d[t.lie][i][2]};
+
+            int x = next.x, y = next.y;
+            if (!check(x, y)) continue;
+            if (next.lie == 0)
+                if (g[x][y] == 'E') continue;
+            else if (next.lie == 1)
+                if (!check(x, y + 1)) continue;
+            else
+                if (!check(x + 1, y)) continue;
+
+            if (dist[next.x][next.y][next.lie] == -1) {
+                dist[next.x][next.y][next.lie] = dist[t.x][t.y][t.lie] + 1;
+                q.push(next);
+                if (next.x == end.x && next.y == end.y && next.lie == end.lie)
+                    return dist[end.x][end.y][end.lie];
+            }
+        }
+    }
+
+    return -1;
+}
+```
+
+## acwing 173 矩阵距离
+
+算一个矩阵的有多个起始状态的 FloodFill。对于多个起始状态，在 BFS 初始化时将这些起始状态都插入到队列中即可。
+
 ## acwing 174 推箱子
 
 推箱子游戏相信大家都不陌生，在本题中，你将控制一个人把 1 个箱子到目的地。
@@ -263,3 +319,6 @@ ex：还有一个典型题 [P1763 埃及分数](https://www.luogu.com.cn/problem
 
 ### 思路
 
+如果把箱子的步数和人的步数看做整体更新状态，在对每个状态进行扩展时，不能保证步数二元组的单调性。在队列不满足单调性时，有其他的解决方案（多次更新一个状态 / 优先队列），但只能保证整体总步数最小。
+
+进一步分析可知，每次箱子移动后，人一定位于箱子之前在的位置上。所以可以分两步 BFS，第一次 BFS 求箱子到终点的路径，第二次 BFS 求人到箱子的路径。
