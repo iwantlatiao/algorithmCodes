@@ -1,3 +1,60 @@
+# 递归的形式
+
+## 指数型枚举
+
+从多个整数中选取任意多个，求可能选择方案。等价于每个数可以选或者不选，所以是 $2^n$ 种选择方案。
+
+```c++
+vector<int> chosen;  // 被选择的数
+void calc(int x) {
+    if (x == n + 1) {
+        for (int i = 0; i < chosen.size(); i++)
+            cout << chosen[i] << " ";
+        return;
+    }
+
+    calc(x + 1);  // 不选 x
+
+    chosen.push_back(x);
+    calc(x + 1);  // 选 x
+    chosen.pop_back();
+}
+```
+
+## 组合型枚举
+
+从多个整数中选取 m 个，求可能选择方案。只需要在开头增加一个返回的情况即可。
+
+```c++
+void calc(int x) {
+    if (chosen.size() > m || chosen.size() + (n - x + 1) < m) return;
+    // ...
+}
+```
+
+## 排列型枚举
+
+把多个整数排成一行后随机打乱顺序，输出所有可能顺序。等价于全排列问题。在递归中求解的问题为“把指定的 n 个整数按照任意次序排列”。
+
+```c++
+int order[N];  // 记录的顺序
+bool vis[N];  // 是否已经被选中过了
+void calc(int x) {
+    if (x == n + 1) {
+        for (int i = 0; i < chosen.size(); i++)
+            cout << chosen[i] << " ";
+        return;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (vis[i]) continue;
+        order[x] = i; vis[i] = true;
+        calc(x + 1);
+        vis[i] = false;
+    }
+}
+```
+
 # 深搜
 
 ## acwing 166 数独
@@ -8,6 +65,14 @@
 
 - 对于每行、每列、每个九宫格分别用一个 9 位二进制数代表哪些数还可以填（二进制的与运算，然后用 lowbit 取能填的数字）
 - 填上（删去）某个数后就要对二进制数的某位改成零（一）
+
+## acwing 171 送礼物
+
+一共有 N （$N<46$） 个物品，每个物品重 Gi，最大举起重量 W，求一次性能搬动的最大重量。
+
+### 思路
+
+双向 DFS。第一次 DFS 将前一半的所有重量组合求出，然后排序去重。第二次 DFS 将后一半的所有重量组合求出，然后在前一半的可能重量中二分查找最大的。总时间复杂度为 $O(2^x + 2^{n-x}\log 2^x)$
 
 # 剪枝
 
