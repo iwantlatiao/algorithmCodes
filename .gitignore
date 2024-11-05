@@ -152,7 +152,7 @@ cython_debug/
 .idea/
 
 # vscode
-.vscode/tasks.json
+.vscode/
 
 # C++ compiled
 *.exe
