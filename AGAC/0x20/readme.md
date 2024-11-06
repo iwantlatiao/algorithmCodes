@@ -330,3 +330,9 @@ int bfs(State start, State end) {
 ![acwing 175 pic](https://cdn.acwing.com/media/article/image/2019/01/16/19_be6ff7a219-%E7%94%B5%E8%B7%AF.png)
 
 从左上往右下走，只能斜着走，求至少需要旋转多少个方格才能到达右下。
+
+### 思路
+
+[@小呆呆](https://www.acwing.com/solution/content/21775/)
+
+可以看成边权只有 0 和 1 的图。踩过格子到达想去的点时，需要判断是否需要旋转电线，若旋转电线表示从 当前点 到 想去的点 的边权是 1，若不旋转电线则边权是 0
