@@ -112,7 +112,11 @@ bool bfs_box(PII start, PII box, Point& end) {
                 q.push(Point{c, d, i});
                 st[c][d][i] = true, path[c][d][i] = seq, pre[c][d][i] = t,
                 dist[c][d][i] = newd;
-            } else if (dist[c][d][i] > newd)  // 1. 箱子路程 2. 人路程
+            }
+            // 1. 箱子路程 2. 人路程
+            // 实际上箱子的路程是严格递增，所以只可能人路程大于 newd，所以只需要对
+            // 人的路径替换，不需要把这个点再加入队列中。
+            else if (dist[c][d][i] > newd)
                 path[c][d][i] = seq, pre[c][d][i] = t, dist[c][d][i] = newd;
         }
     }
