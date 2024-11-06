@@ -336,3 +336,82 @@ int bfs(State start, State end) {
 [@小呆呆](https://www.acwing.com/solution/content/21775/)
 
 可以看成边权只有 0 和 1 的图。踩过格子到达想去的点时，需要判断是否需要旋转电线，若旋转电线表示从 当前点 到 想去的点 的边权是 1，若不旋转电线则边权是 0
+
+### Debug
+
+在写代码的时候模仿 acwing 174 风格写了如下错误的搜索代码。分析错误原因，174 是正常的 bfs，元素仅从队尾进入，但 175 是双端队列，可能从队头进入。如下的写法不能保证单调性（应该插到队头的元素在插到队尾后就被置为真，无法插入队头），所以可能会搜索错误。
+
+```c++
+int bfs() {
+    // ...
+    while (!q.empty()) {
+        auto t = q.front();
+        q.pop_front();
+
+        int x = t.first, y = t.second;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];  // 格点下一步的位置
+            int j = x + ix[i], k = y + iy[i];  // 下一步要经过的大格
+
+            if (0 <= a && a <= n && 0 <= b && b <= m) {
+                int w = 0;
+                if (g[j][k] != cs[i]) w = 1;
+
+                if (!st[a][b]) { // 不能这样写
+                    st[a][b] = true;
+                    d[a][b] = d[x][y] + w;
+                    if (w == 1) q.push_back(PII{a, b});
+                    else q.push_front(PII{a, b});
+                } else if (d[a][b] > d[x][y] + w) d[a][b] = d[x][y] + w;
+            }
+        }
+    }
+    // ...
+}
+```
+
+正确的写法应该如下。也就是说，在双端队列、优先队列等情况，在从队列中取出元素时才判断是否已访问过，才能满足队列的单调性。
+
+```c++
+int bfs() {
+    if (((n + m) & 1) == 1)
+        return -1;
+
+    memset(st, 0, sizeof st);
+    memset(d, 0x3f, sizeof d);
+
+    deque<PII> q;
+    q.push_back(PII{0, 0});
+    d[0][0] = 0;
+
+    // 为了保证队列单调性, 权值为 0 的边从队头入,
+    // 权值为 1 的边从队尾入, 取队头.
+    while (!q.empty()) {
+        auto t = q.front();
+        q.pop_front();
+
+        int x = t.first, y = t.second;
+        // cout << x << " " << y << endl;
+        if (st[x][y]) continue;
+        st[x][y] = true;  // 没有负权边, 一个点不会经过两遍
+
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];  // 格点下一步的位置
+            int j = x + ix[i], k = y + iy[i];  // 下一步要经过的大格
+
+            if (0 <= a && a <= n && 0 <= b && b <= m) {
+                int w = 0;
+                if (g[j][k] != cs[i]) w = 1;
+                if (d[a][b] > d[x][y] + w) {
+                    d[a][b] = d[x][y] + w;
+                    if (w == 1) q.push_back(PII{a, b});
+                    else q.push_front(PII{a, b});
+                }
+            }
+        }
+    }
+
+    if (d[n][m] == INF) return -1;
+    return d[n][m];
+}
+```
