@@ -16,11 +16,22 @@ struct Point {
     int x, y, d;
 } boy, girl, ghost[2];
 
+bool bfs_each(queue<Point>& q, int t, int v) {
+    
+
+    return false;
+}
+
 int bfs() {
     memset(st, 0, sizeof st);
     queue<Point> qb, qg;
     qb.push(boy), qg.push(girl);
     st[boy.x][boy.y] = 1, st[girl.x][girl.y] = 2;
+
+    for (int t = 1; !qb.empty() && !qg.empty(); t++)
+        if (bfs_each(qb, t, 3) || bfs_each(qg, t, 1))
+            return t;
+
     return -1;
 }
 
