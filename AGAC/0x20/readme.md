@@ -547,6 +547,83 @@ $$\lceil\frac{tot}3\rceil=\lfloor\frac{tot+2}3\rfloor$$
 
 ## AcWing 184. 虫食算
 
+[@西伯利亚挖番茄](https://www.acwing.com/solution/content/83532/)
+
+实现细节：
+
+- 将读入的字符数组转化为数字数组可以用 `ch - 'A'` 的方式实现
+- 递归实现排列型枚举。手动做加法竖式时按照从右到左的顺序，因此我们也按照从右到左出现的次序枚举每个字母的选法。
+- 对于每一列都有两种情况。一列的三个字母都确定（上一列全确定与未全确定），和一列三个字母未全确定。然后讨论加法的和与进位进行判断。
+
+```c++
+bool check()
+{
+    for (int i = n - 1, t = 0; i >= 0; i -- )  // t 表示进位，i 表示从后往前枚举列
+    {
+        int a = e[0][i] - 'A', b = e[1][i] - 'A', c = e[2][i] - 'A';    //转化 
+        if (path[a] != -1 && path[b] != -1 && path[c] != -1)    //判断一列的三个字母是否都确定 
+        {
+            a = path[a], b = path[b], c = path[c];
+            if (t != -1)    //上一列字母全部确定 
+            {
+                if ((a + b + t) % n != c) return false;
+                if (!i && a + b + t >= n) return false;     //第一列特判 
+                t = (a + b + t) / n; 
+            }
+            else    //上一列字母中有没有确定的
+            {
+                if ((a + b + 0) % n != c && (a + b + 1) % n != c) return false;     //若进位是0或1的两种情况取膜后均无法得到c则返回false 
+                if (!i && a + b >= n) return false;     //第一列特判 
+            }
+        }
+        else t = -1;
+    }
+
+    return true;    //历经百般磨难都没有false说明满足题意，成功返回true 
+}
+
+bool dfs(int u)
+{
+    if (u == n) return true;     
+
+    for (int i = 0; i < n; i ++ )
+        if (!st[i])
+        {
+            st[i] = true;   //某字母出现过 
+            path[q[u]] = i;     //选择编号q[u](某字母)可能的数字i
+            if (check() && dfs(u + 1)) return true;   //每次确定一个字母都进行check判断 
+            st[i] = false;      //回溯 
+            path[q[u]] = -1;
+        }
+
+    return false;   //已经判断过该组合无法满足题意，因此false 
+}
+
+int main()
+{
+    scanf("%d", &n);
+    for (int i = 0; i < 3; i ++) scanf("%s", e[i]); 
+    for (int i = n - 1, k = 0; i >= 0; i --)    
+        for (int j = 0; j < 3; j ++)
+        {
+            int t = e[j][i] - 'A';
+            if (!st[t])
+            {
+                st[t] = true;
+                q[k ++ ] = t;   // 储存各字母第一次出现的顺序，便于枚举剪枝
+            }
+        }
+
+    memset(st, 0, sizeof st);
+    memset(path, -1, sizeof path);
+    dfs(0);
+
+    for (int i = 0; i < n; i ++ ) printf("%d ", path[i]);   //下标即为A,B,C... 
+
+    return 0;
+}
+```
+
 ## AcWing 185. 玛雅游戏
 
 ## AcWing 186. 巴士
