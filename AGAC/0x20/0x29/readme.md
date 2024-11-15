@@ -190,7 +190,68 @@ bool dfs(int u) {  // 查找符合规定的小方块，并且按照要求消除�
 
 ## AcWing 186. 巴士
 
+给定巴士到达时刻，求出巴士线路的最小总数量。
+
+[@yxc](https://www.acwing.com/solution/content/4221/)
+
+实现细节：
+
+- 在读入时已有升序排序的巴士到达时刻，直接预处理出所有可能的线路（通过枚举起点和公差拿到所有等差数列，起点和公差需要满足两个条件：公差至少是起点加一；起点加公差一定小于六十）。
+- 由于总路线数量较多，最多从中选出 17 条，但实现我们并不知道该选多少条，因此可以采用迭代加深搜索。
+- 由于是枚举组合数，并不是排列数，为了避免重复在DFS时传入当前枚举的起点。将所有等差数列按长度降序排序，优先枚举长度较长的等差数列。这样在搜索树中前几层的分支少，可以更快地发现矛盾然后回溯。（如果不处理等差数列，直接用起点和标记进行枚举，此处就无法剪枝）
+- 由于优先枚举长度较长的等差数列，当前路线覆盖的点数是最多的，如果 当前路线能覆盖的点数 乘 剩余可选的路径条数 加 当前已经覆盖的点数 小于 总点数，说明当前方案一定非法，直接回溯即可。
+
+```c++
+int n;
+vector<pair<int, PII>> routes;
+int bus[M];
+
+bool is_route(int a, int d) {
+    for (int i = a; i < 60; i += d)
+        if (!bus[i]) return false;
+    return true;
+}
+
+bool dfs(int depth, int u, int sum, int start) {
+    if (u == depth) return sum == n;
+    if (routes[start].first * (depth - u) + sum < n) return false;
+
+    for (int i = start; i < routes.size(); i ++ ) {
+        auto r = routes[i];
+        int a = r.second.first, d = r.second.second;
+        if (!is_route(a, d)) continue;
+        for (int j = a; j < 60; j += d) bus[j] -- ;
+        if (dfs(depth, u + 1, sum + r.first, i)) return true;
+        for (int j = a; j < 60; j += d) bus[j] ++ ;
+    }
+    return false;
+}
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; i ++ ) {
+        int t; scanf("%d", &t); bus[t] ++ ;
+    }
+
+    for (int i = 0; i < 60; i ++ )
+        for (int j = i + 1; i + j < 60; j ++ )
+            if (is_route(i, j))
+                routes.push_back({(59 - i) / j + 1, {i, j}});
+
+    sort(routes.begin(), routes.end(), greater<pair<int, PII>>());
+
+    int depth = 0; while (!dfs(depth, 0, 0, 0)) depth ++ ;
+    printf("%d\n", depth); return 0;
+}
+```
+
 ## AcWing 187. 导弹防御系统
+
+[最长递增子序列（nlogn 二分法、DAG 模型 和 延伸问题）](https://writings.sh/post/longest-increasing-subsequence-revisited)
+
+[算法学习笔记(27): 最长上升子序列](https://zhuanlan.zhihu.com/p/121032448)
+
+[用耐心排序证明 LIS 的 nlogn 做法](https://zhuanlan.zhihu.com/p/670544975)
 
 ## AcWing 188. 武士风度的牛
 
