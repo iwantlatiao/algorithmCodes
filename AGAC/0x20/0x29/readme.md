@@ -247,6 +247,8 @@ int main() {
 
 ## AcWing 187. 导弹防御系统
 
+拓展：最长递增子序列的长度、数量；二维、三维最长递增子序列；最长非严格递增、有限递增子序列；与最长公共子序列的关系。
+
 [最长递增子序列（nlogn 二分法、DAG 模型 和 延伸问题）](https://writings.sh/post/longest-increasing-subsequence-revisited)
 
 [算法学习笔记(27): 最长上升子序列](https://zhuanlan.zhihu.com/p/121032448)
