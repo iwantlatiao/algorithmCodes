@@ -338,7 +338,32 @@ int main()
 
 ## AcWing 190. 字串变换
 
+已知有两个字串及一组字串变换的规则，求最小变换步数。
 
+可以通过双向 BFS 减少时间复杂度。
+
+```c++
+int bfs() {
+    unordered_map<string, int> da, db;  // 保存双向搜索时的变换步数
+    queue<string> qa, qb;
+    int step = 0;
+
+    qa.push(A), qb.push(B);
+    da[A] = 0, db[B] = 0;
+
+    // 只要其中一个队列空，就说明无法变换到目标
+    while (qa.size() && qb.size()) {
+        int t;
+        // 双向搜索，选择队列少的搜
+        if (qa.size() < qb.size()) t = extend(qa, da, db, a, b);
+        else t = extend(qb, db, da, b, a);
+        if (t <= 10) return t;
+        if (++step > 10) return -1;
+    }
+
+    return -1;
+}
+```
 
 ## AcWing 191. 天气预报
 
