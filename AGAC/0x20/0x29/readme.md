@@ -373,7 +373,80 @@ int bfs() {
 
 一道很有趣的搜索题。如果直接搜索，由于需要让每个地方不下雨的时间不超过七天，存储并检查整个地图不好实现。但是其实可以把存整个地图转化为[存地图的四个角](https://www.acwing.com/solution/content/7518/)，这样 BFS 或 DFS 起来也方便。搜索时，保存一个 `vis[day][x][y][s0][s1][s2][s3]` 用于记录是否已经搜过这个点，其中 s 分别表示四个角的未降雨天数。
 
-## AcWing 192. 立体推箱子
+## AcWing 192. 立体推箱子 2
+
+与立体推箱子一样，是一个 1x2 的方块，需要从 `(x, y)` 推到原点。不过地图中没有不能踩的点。数据范围是 `1e10` 。
+
+[@chinaxjh](https://www.acwing.com/solution/content/5035/)：
+
+首先这么大的数据范围肯定不能直接搜索，应该是有数学规律在里面。可以先用朴素 BFS 看下小范围数据的规律，然后写出各行各列的通项。
+
+[@Z同学](https://www.acwing.com/solution/content/8587/)：
+
+对于最小步数，可以发现只有横着横向滚动和竖着竖向滚动时，两步就能走三格，这是最快的。仔细观察可以发现，所有横纵坐标模 3 为 0，且是立着的状态到终点的最小步数我们能直接计算得出，对于这些状态假设叫做合适点，那么我们只要让起点状态用最小步数走到合适点上，那么从起点到终点的距离就可以相加得出。
+
+```c++
+struct node{int x,y,dir;};
+int dist[7][7][4];  // 箱子的相对坐标到合适点的距离
+bool check(int a,int b){return a>=0&&a<=6&&b>=0&&b<=6;}
+
+// 在 7x7 的格子中搜，目标是到达 9 个可能的合适点
+// 取模后原本应该是 (0,0) ~ (3,3) 4x4 格子，但由于箱子在翻时
+// 坐标可能为负数所以把 (0, 0) -> (3, 3), (3, 3) -> (6, 6) ，即为 7x7 格子
+int bfs(node start,int pastx,int pasty){
+    int res = 2e9, d[3][4][3] = {/*...*/};
+    queue<node> q; q.push(start);
+    memset(dist,0x3f,sizeof dist);
+    dist[start.x][start.y][start.dir] = 0;
+
+    while(q.size()){
+        auto t = q.front();
+        q.pop();
+
+        // 如果到了合适点
+        if((t.x)%3==0&&(t.y)%3==0&&(t.dir)==0){
+            // 计算合适点到终点的距离，平行坐标轴翻两下最多走 3 格
+            // 这里的 continue 是剪枝，不选择负半轴的合适点
+            // 但是没想到证明的方法（到负半轴再折返可能耗费更多），
+            // 去掉该剪枝，并将距离做 abs 实际也能通过
+            int bnsx = ((t.x-3)+pastx)/3*2, bnsy = ((t.y-3)+pasty)/3*2;
+            if(bnsx<0||bnsy<0) continue;
+            res = min(res,dist[t.x][t.y][0]+bnsx+bnsy);
+        }
+        for(int i=0;i<4;++i){
+            int x = (t.x)+d[t.dir][i][0];
+            int y = (t.y)+d[t.dir][i][1];
+            int dir = d[t.dir][i][2];
+
+            if(!check(x,y)) continue;
+            if(dir==1&&!check(x,y+1)) continue;
+            if(dir==2&&!check(x+1,y)) continue;
+
+            if(dist[x][y][dir]==0x3f3f3f3f){
+                dist[x][y][dir] = dist[t.x][t.y][t.dir]+1;
+                q.push({x,y,dir});
+            }
+        }
+
+    }
+    return res;
+}
+
+int main(){
+    char ch; int x,y;
+    while(cin>>ch>>x>>y){
+        int dir;
+        if(ch=='H') dir = 1;
+        else if(ch=='U') dir = 0;
+        else dir = 2;
+        node start = {x%3+3,y%3+3,dir};
+        x-=x%3; y-=y%3;
+        printf("%d\n",bfs(start,x,y));
+    }
+    return 0;
+}
+```
+
 
 ## AcWing 193. 算乘方的牛
 
