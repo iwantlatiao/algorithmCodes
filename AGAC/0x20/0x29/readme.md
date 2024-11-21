@@ -465,9 +465,54 @@ int main(){
 
 ![acwing 194](https://cdn.acwing.com/media/article/image/2019/01/17/19_c741618419-2.png)
 
-[@fangzichang](https://www.acwing.com/solution/content/161264/)
+[@fangzichang](https://www.acwing.com/solution/content/161264/) & [@小小_88](https://www.acwing.com/solution/content/104838/)
 
-1. 不要修改原图中的颜色，而是用一个数组表示一个格子的三种状态：和起点已经相连；下一步可以被染色（即和某个状态为1的点相连，但是颜色不同）；其他情况。
+1. 不要修改原图中的颜色，而是用一个数组表示一个格子的三种状态：和起点已经相连 1；下一步可以被染色 2（即和某个状态为1的点相连，但是颜色不同）；没搜到 0。这样通过状态求连通块写的简单，只需要对 2 做拓展即可。
 2. 若当前染色无效就跳过
+
+```c++
+// 将 (x, y) 及它附近颜色为 c 格子都加入连通块
+void flood_fill(int x, int y, int c) {
+    st[x][y] = 1;
+    for (int i = 0; i < 4; i++) {
+        int a = x + dx[i], b = y + dy[i];
+        // 超出边界就跳过
+        if (a < 0 || a >= n || b < 0 || b >= n) continue;
+        // 之前已经和起点变成相同颜色就跳过
+        if (st[a][b] == 1) continue;
+        // 如果相邻格子颜色也是 c，就继续加入连通块操作
+        // 否则，这个格子就是连通块的边界
+        if (g[a][b] == c) flood_fill(a, b, c);
+        else st[a][b] = 2;
+    }
+}
+
+// 估价函数，统计不在连通块中的颜色个数
+int f() {/*...*/}
+
+bool dfs(int u) {
+    int eval = f();
+    if (u + eval > maxd) return false;
+    if (eval == 0) return true;
+
+    int bst[N][N];
+    memcpy(bst, st, sizeof st);
+
+    // 枚举下个变的颜色
+    for (int c = 0; c < 6; c++) {
+        bool ok = false;  // 连通块边界上是否有该颜色
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (st[i][j] == 2 && g[i][j] == c) {
+                    ok = true;
+                    flood_fill(i, j, c);
+                }
+        if (ok && dfs(u + 1)) return true;
+        memcpy(st, bst, sizeof st);  // 这个方案不行，恢复状态
+    }
+
+    return false;
+}
+```
 
 ## AcWing 195. 骑士精神
