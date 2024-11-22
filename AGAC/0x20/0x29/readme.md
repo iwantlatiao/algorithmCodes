@@ -516,3 +516,11 @@ bool dfs(int u) {
 ```
 
 ## AcWing 195. 骑士精神
+
+给你一个 5x5 的棋盘，按照“马走日”的方式移动棋子，用最少的步骤把输入的棋盘恢复成原样
+
+IDA 星：[@1e9+7](https://www.acwing.com/solution/content/8733/)
+
+估价函数设计为：当前局面（除了空格）还有多少个棋子未归位
+
+双向 BFS：[@墨染空](https://www.acwing.com/solution/content/4075/)
