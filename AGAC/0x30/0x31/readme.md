@@ -103,7 +103,7 @@ $$
 两边同时减去 $\lfloor n / m \rfloor$，左边得到：
 
 $$
-\left\lceil\frac nm\right\rceil-\left\lfloor\frac nm\right\rfloor=\left\lceil\frac{n\mathrm{~mod~}m}m\right\rceil=\begin{cases}0,&\text{ 若 }n\mathrm{~mod~}m=0,\\1,&\text{ 若 }n\mathrm{~mod~}m>0.&\end{cases}
+\left\lceil\frac nm\right\rceil-\left\lfloor\frac nm\right\rfloor=\left\lceil\frac{n\mathrm{~mod~}m}m\right\rceil=\begin{cases}0,&\text{ 若 }n\mathrm{~mod~}m=0,\\ 1,&\text{ 若 }n\mathrm{~mod~}m>0.&\end{cases}
 $$
 
 右边：设 $n = mq + r$，且 $q = \lfloor n / m \rfloor$，$0 \leq r < m$，则
@@ -114,7 +114,7 @@ $$
 &=\left\lfloor\frac{r+m-1}m\right\rfloor-\left\lfloor\frac rm\right\rfloor \\
 &=\left\lfloor\frac{r+m-1}m\right\rfloor \\
 &=\left\lfloor\frac{n\mathrm{~mod~}m+m-1}m\right\rfloor \\
-&=\begin{cases}0,&\text{ 若 }n\mathrm{~mod~}m=0,\\1,&\text{ 若 }n\mathrm{~mod~}m>0.&\end{cases}
+&=\begin{cases}0,&\text{ 若 }n\mathrm{~mod~}m=0,\\ 1,&\text{ 若 }n\mathrm{~mod~}m>0.&\end{cases}
 \end{aligned}
 $$
 
