@@ -29,7 +29,7 @@ void primes(int n) {
     for (int i = 2; i <= n; i++) {
         if (v[i]) continue;
         cout << i << endl;   // i 是质数
-        for (int j = i; i * j <= n; j++) v[i * j] = 1;
+        for (int j = i; j <= n / i; j++) v[i * j] = 1;
     }
 }
 ```
@@ -53,7 +53,7 @@ void primes(int n) {
         // 给当前的数 i 乘质因子 prime[j]
         for (int j = 1; j <= m; j++) {
             // prime[j] 不是 i 的最小质因子了，或者乘完超出范围
-            if (prime[j] > v[i] || prime[j] * i > n) continue;
+            if (prime[j] > v[i] || prime[j] > n / i) continue;
             v[prime[j] * i] = prime[j];
         }
     }
