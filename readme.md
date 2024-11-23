@@ -28,7 +28,11 @@ This section will showcase the problem lists that have already been solved.
 
 ## 2.2 Advanced Guide to Algorithm Contest
 
-- 0x00 [Basic Algorithm](./AGAC/0x00/)
+- [tedukuri](https://github.com/lydrainbowcat/tedukuri)
+- 0x00 [Basic Algorithm](./AGAC/0x00)
+- 0x10 [Basic Data Structure](./AGAC/0x10)
+- 0x20 [Search](./AGAC/0x20)
+- 0x30 [Math](./AGAC/0x30)
 
 # 3. Learning material
 
