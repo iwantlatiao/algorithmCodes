@@ -128,3 +128,5 @@ int main() {
     return 0;
 }
 ```
+
+拓展：[数论分块](https://oi-wiki.org/math/number-theory/sqrt-decomposition/)
