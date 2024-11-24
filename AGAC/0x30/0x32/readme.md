@@ -129,4 +129,90 @@ int main() {
 }
 ```
 
-拓展：[数论分块](https://oi-wiki.org/math/number-theory/sqrt-decomposition/)
+拓展：[数论分块的性质](https://oi-wiki.org/math/number-theory/sqrt-decomposition/)
+
+## 最大公约数
+
+两个非负整数的最大公约数和最小公倍数的乘积等于两个整数的乘积。
+
+```c++
+int a, b >= 0 : gcd(a, b) * lcm(a, b) = a * b
+```
+
+更相减损术（常用于高精度）
+
+```c++
+int a > int b : gcd(a, b) = gcd(b, a - b) = gcd(a, a - b)
+int a, b >= 0 : gcd(2 * a, 2 * b) = 2 * gcd(a, b)
+```
+
+欧几里得算法
+
+```c++
+// int a, b; b != 0 : gcd(a, b) = gcd(b, a % b)
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+```
+
+### acwing 200 Hankson的趣味题
+
+题意：有 n 个询问，每个询问给出 a、b、c、d 四个自然数，求有多少个 x 满足 `gcd(a,x) = c` 且 `lcm(b,x) = d`。其中 `n < 2000, a,b,c,d < 2e9`。
+
+朴素做法：从 `lcm(b,x) = d` 可知 `d % x == 0`。于是可以先用试除法求出 d 的所有约数，然后检查是否满足题目等式。时间复杂度为 $n\sqrt{d} \log{d}$。
+
+[@小小_88](https://www.acwing.com/solution/content/141953/)：在朴素做法中，主要的时间消耗在试除法中，因为大部分数的约数并不多。试除法中大部分的数都是无法整除 d 的。
+
+为了避免试除法消耗过多时间，可以通过预处理质数 + 搜索的方法得到 d 的所有约数，再判断是否满足题目等式。
+
+```c++
+void dfs(int u, int p) //dfs 用质因子拼凑所有约数
+{
+    if(u == cntf) { divider[cntd++] = p; return; }
+
+    for(int i = 0; i <= factor[u].second; i++)
+    {
+        dfs(u + 1, p);
+        p *= factor[u].first;
+    }
+}
+
+int main()
+{
+    get_primes(50000); //预处理出 1 ~ sqrt(2 * 1e9) 之间的所有质数
+
+    scanf("%d", &n);
+    while(n--)
+    {
+        int a0, a1, b0, b1;
+        scanf("%d%d%d%d", &a0, &a1, &b0, &b1);
+
+        //将 b1 分解质因子并存入 factor
+        int d = b1; cntf = 0;
+        for(int i = 0; primes[i] <= d / primes[i]; i++)
+        {
+            int p = primes[i];
+            if(d % p == 0)
+            {
+                int s = 0;
+                while(d % p == 0) s++, d /= p;
+                factor[cntf++] = {p, s};
+            }
+        }
+        if(d > 1) factor[cntf++] = {d, 1};
+
+        //用 d1 的所有质因子拼凑出 d1 的所有约数
+        cntd = 0; dfs(0, 1);
+
+        //枚举所有约数，记录满足条件的数的个数
+        int res = 0;
+        for(int i = 0; i < cntd; i++)
+        {
+            int x = divider[i];
+            if(gcd(x, a0) == a1 && (LL)x * b0 / gcd(x, b0) == b1) res++;
+        }
+        printf("%d\n", res);
+    }
+    return 0;
+}
+```
