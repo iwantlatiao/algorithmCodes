@@ -216,3 +216,97 @@ int main()
     return 0;
 }
 ```
+
+## 欧拉函数
+
+互质：如果 $\forall{a, b} \in \mathbb{N}, \mathrm{gcd}(a, b) = 1$ ，则称 a 和 b 互质。对于多个数的情况，则分为互质和两两互质（条件更强）。
+
+[欧拉函数 wiki](https://oi-wiki.org/math/number-theory/euler-totient)
+
+欧拉函数 $\phi(n)$ 表示小于等于 n 的正整数中，与 n 互质的数的个数。若 n 为质数，则 $\phi(n) = n - 1$。
+
+若在算数基本定理中 $N = \prod_{i=1}^m p_1^{c_1}\cdots p_m^{c_m}$，则有欧拉函数计算式如下：
+
+$$
+\phi(n) = N * \frac{p_1 - 1}{p_1} * \cdots * \frac{p_m - 1}{p_m} = N * \prod (1 - \frac{1}{p})
+$$
+
+上式可以通过容斥原理证明。根据欧拉函数计算式，只需要分解质因数，就可以顺便求出欧拉函数：
+
+```c++
+// 计算欧拉函数
+int phi(int n) {
+    int ans = n;
+    for (int i = 2; i*i <= n; i++) {
+        if (n % i == 0) { // i是质数
+            ans = ans / i * (i-1);
+            while (n % i == 0) n /= i;
+        }
+    }
+    if (n > 1) // n是质数
+        ans = ans / n * (n-1);
+    return ans;
+}
+```
+
+欧拉函数性质 1：对于大于 1 的自然数 n，1 到 n 中与 n 互质的数的和为 $n * \phi(n) / 2$。
+
+欧拉函数性质 2：若 a 与 b 互质，则 $\phi(ab) = \phi(a)\phi(b)$。将该性质推广到一般函数，可以得到积性函数的概念。
+
+积性函数：若 a 与 b 互质时有 $f(ab) = f(a)f(b)$ 则称 $f$ 为积性函数。
+
+积性函数性质 1：若 $f$ 是积性函数，且在算数基本定理中 $n = \prod_{i=1}^m p_1^{c_1}\cdots p_m^{c_m}$，则 $f(n) = \prod_{i=1}^m f(p_i^{c_i})$
+
+欧拉函数性质 3：若 p 为质数，p 能整除 n 且 p^2 能整除 n，则 $\phi(n) = \phi(n/p) * p$。由该性质可得 $\phi(p^k) = p^k - p^{k-1}$ 。
+
+欧拉函数性质 4：若 p 为质数，p 能整除 n 且 p^2 不能整除 n，则 $\phi(n) = \phi(n/p) * (p - 1)$
+
+欧拉函数性质 5：n 的所有因子的欧拉函数和为 n，即 $\sum_{d|n} \phi(d) = n$。
+
+## acwing 201 可见的点
+
+题意：在一个平面直角坐标系的第一象限内，如果一个点 `(x,y)` 与原点 `(0,0)` 的连线中没有通过其他任何点，则称该点在原点处是可见的。编写一个程序，计算给定整数 N 的情况下，满足 `0 <= x, y <= N` 的可见点 `(x，y)` 的数量（可见点不包括原点）。
+
+![acwing 201](https://cdn.acwing.com/media/article/image/2019/01/18/19_a68c1a281a-3090_1.png)
+
+分析题目可以发现，除了 `(1, 0)`、`(0, 1)`、`(1, 1)` 这三个点以外，其他的点能被看到，当且仅当 `1 <= x <= y` 且 `x != y` 且 `gcd(x, y) = 1`。
+且可见点关于直线 `y = x` 对称。所以答案为：
+
+$$ 3 + 2 * \sum_{i=2}^N \phi(i) $$
+
+我们可以用埃氏筛法的思想在 $O(NlogN)$ 的时间内求出 N 以内每个数的欧拉函数。
+
+```c++
+void euler(int n) {
+	for (int i = 2; i <= n; i++) phi[i] = i;  // 初始化 phi(N) = N
+    // 如果 i 是质数，就在 phi(i), phi(2i), ... 中乘一项 (i-1) / i
+	for (int i = 2; i <= n; i++)
+		if (phi[i] == i) 
+			for (int j = i; j <= n; j += i)
+				phi[j] = phi[j] / i * (i - 1);
+}
+```
+
+也可以使用线性筛的思想，利用性质 3（`i%prime[j] = 0` 说明 `i*prime[j]` 与 `i` 有相同质因子）和性质 4（`i%prime[j] > 0` 说明 `i` 与 `prime[j]` 互质）在 $O(N)$ 内求。
+
+```c++
+void euler(int n) {
+	memset(v, 0, sizeof(v)); // 最小质因子
+	m = 0; // 质数数量
+	for (int i = 2; i <= n; i++) {
+		if (v[i] == 0)  // i是质数
+			v[i] = i, prime[++m] = i, phi[i] = i - 1;
+		
+        // 给当前的数i乘上一个质因子
+		for (int j = 1; j <= m; j++) {
+			// i有比prime[j]更小的质因子，或者超出n的范围
+			if (prime[j] > v[i] || prime[j] > n / i) break;
+			// prime[j]是合数i*prime[j]的最小质因子
+			v[i*prime[j]] = prime[j];
+			phi[i*prime[j]] = phi[i] * (i%prime[j] ? prime[j]-1 : prime[j]);
+		}
+	}
+	for (int i = 2; i <= n; i++)
+		cout << i << ' ' << phi[i] << endl;
+}
+```
