@@ -210,3 +210,19 @@ $$
 
 [线性同余方程](https://oi-wiki.org/math/number-theory/linear-equation/)
 
+### acwing 203 同余方程
+
+题意：求关于 x 的同余方程 $ax\bmod 1 \pmod b$ 的最小整数解，输入保证一定有解。
+
+上式可改写为 $ax+by=1$ ，有解当且仅当 $\mathrm{gcd}(a, b)=1$。所以可以用扩展 GCD 先求出特解 $x_0$ 和 $y_0$，通解为 $x = x_0 + kb$。最小正整数解需要通过取模操作把解的范围移动到 1 到 b 之间，即 `x = (x % b + b) % b`。
+
+## 线性同余方程组
+
+满足模数两两互质：[中国剩余定理](https://oi-wiki.org/math/number-theory/crt/)
+
+不满足模数两两互质：数学归纳法（用 n 次扩展 GCD）
+
+### acwing 204 表达整数的奇怪方式
+
+[@墨染空](https://www.acwing.com/solution/content/3539/)
+
