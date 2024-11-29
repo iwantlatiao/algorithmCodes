@@ -226,3 +226,47 @@ $$
 
 [@墨染空](https://www.acwing.com/solution/content/3539/)
 
+对于每两个式子，都将其合并，可以得到
+
+$$
+\begin{cases}
+    x &\equiv m_1 \pmod {a_1} \\
+    x &\equiv m_2 \pmod {a_2}
+\end{cases}
+\Rightarrow
+\begin{cases}
+    x &= k_1*a_1+m_1 \\
+    x &= k_2*a_2+m_2
+\end{cases}
+\Rightarrow
+x = k_1 * a_1 + m_1 = k_2 * a_2 + m_2
+\Rightarrow
+k_1*a_1 + k_2*(-a_2)=m_2-m_1
+$$
+
+也就是找到最小的 $k_1$ 和 $k_2$ 使得等式成立。可以用扩展 GCD 找到一组解 $k_1'$ 和 $k_2'$ 使得
+
+$$k_1'*a_1 + k_2'*(-a_2)=\mathrm{gcd}(a_1, -a_2)$$
+
+只需让 $k_1'$ 和 $k_2'$ 分别扩大 $(m_2-m_1)/\mathrm{gcd}(a_1, -a_2)$ 倍即可找到原式的一组解。并且由于通解形式为
+
+$$
+\begin{cases}
+    k_1 & = k_1 + k*\frac{a_2}{d} \\
+    k_2 & = k_2 + k*\frac{a_1}{d}
+\end{cases}
+$$
+
+所以可以通过 `(k1 % (a2/d) + (a2/d)) % (a2/d)` 求得最小正整数解。
+
+接下来将 $k_1$ 代入原式可得
+
+$$
+\begin{aligned}
+x&=(k_1+k*\frac{a_2}d)*a_1+m_1\\
+&=k_1*a_1+m_1+k*\frac{a_2*a_1}d
+\\&=k_1*a_1+m_1+k*\mathrm{lcm}(a_1,a_2)
+\end{aligned}
+$$
+
+令 $a_0=lcm(a_1,a_2)$，$m_0=k_1*a_1+m_1$ 则有 $x = k*a_0+m_0$，这样两个式子就合成了一条式子，可以继续进行迭代了。
