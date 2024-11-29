@@ -22,3 +22,36 @@ $$
 
 [二项式定理](https://oi-wiki.org/math/combinatorics/combination/#%E4%BA%8C%E9%A1%B9%E5%BC%8F%E5%AE%9A%E7%90%86)
 
+### AcWing 211 计算系数
+
+题意：给定多项式 $(ax+by)^k$ 要求求出多项式展开后 $x^ny^m$ 的系数。
+
+二项式定理长这样：
+
+$$(a+b)^k=\sum_{i=0}^kC_k^ia^ib^{k-i}$$
+
+所以 $x^ny^m$ 的系数是 $C_k^na^nb^m$，可以用快速幂和逆元计算。
+
+```c++
+int qmi(int a, int k){
+    a %= mod;
+    int res = 1 % mod;
+    while (k){
+        if (k & 1) res = res * a % mod;
+        a = a * a % mod; k >>= 1;
+    }
+    return res;
+}
+
+int main(){
+    int a, b, k, n, m;
+    scanf("%d%d%d%d%d", &a, &b, &k, &n, &m);
+    int res = qmi(a, n) * qmi(b, m) % mod;
+    for (int i = 1, j = k; i <= n; i ++ , j -- ) {
+        res = res * j % mod;
+        // 费马小定理，当然也可以用扩展 GCD 解线性同余方程
+        res = res * qmi(i, mod - 2) % mod; 
+    }
+    printf("%d\n", res); return 0;
+}
+```
