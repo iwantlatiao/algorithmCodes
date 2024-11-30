@@ -140,3 +140,33 @@ int main(){
     return 0;
 }
 ```
+
+### Lucas 定理
+
+它可以将大规模的组合数取模计算分解为多个小规模的组合数取模计算，从而大大减少计算量。
+
+$$\begin{pmatrix}n\\m\end{pmatrix}\bmod p=\begin{pmatrix}\lfloor n/p\rfloor\\\lfloor m/p\rfloor\end{pmatrix}\cdot\begin{pmatrix}n\bmod p\\m\bmod p\end{pmatrix}\bmod p$$
+
+### acwing 213 古代猪文
+
+题意：（数论全家桶）给定整数 n 和 q，计算 $q^{\sum_{d|n}C_n^d}\bmod 999911659$
+
+思路 [@Notshgiook](https://www.luogu.com.cn/article/mrtnh4ib)：考虑到原式比较大，所以需要缩小取值范围。肯定不能直接用 Lucas 定理。先用一次欧拉定理：
+
+$$a^b\equiv\begin{cases}a^{b \bmod \varphi(m)}&gcd(a,m)=1\\a^b&b<\varphi(m)\\a^{b \bmod \varphi(m)+\varphi(m)}&b\geq\varphi(m)\end{cases}\pmod m$$
+
+所以有
+
+$$q^{\sum_{d|n}C_n^d} \equiv q^{\sum_{d|n}C_n^d\bmod 999911658} \equiv q^{\sum_{d|n}(C_n^d \bmod 999911658)\bmod 999911658}\pmod{999911659} $$
+
+问题转化为计算组合数的取模。首先 999911658 不是一个质数，不能直接用 Lucas 定理，暴力求组合数之后费马小定理也不行。但是通过计算 $999911658 = 2*3*4697*35617$ 发现可以使用中国剩余定理。
+
+$$
+\begin{cases}x\equiv\sum_{d|n}C_n^d=a_1&\pmod{2}\\x\equiv\sum_{d|n}C_n^d=a_2&\pmod{3}\\x\equiv\sum_{d|n}C_n^d=a_3&\pmod{4679}\\x\equiv\sum_{d|n}C_n^d=a_4&\pmod{35617}\end{cases}
+$$
+
+其中等式的右边都可以应用 Lucas 定理。该方程组的通解为 $x=\sum_{i=1}^na_it_iM_i+TM,T\in\mathbb{Z}$，即在模 999911658 意义下只有唯一解。
+
+## 卡特兰数
+
+详见 [卡特兰数整理](../../../luogu_training_list/1-4_recursion/readme.md#3-卡特兰数)
