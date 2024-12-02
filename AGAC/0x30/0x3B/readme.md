@@ -51,7 +51,7 @@ int euler(int n) {
     if(n > 1) ans = ans / n * (n - 1);
     return ans;
 }
-int main() {}
+int main() {
     get_primes(N);  // N = 1e5
     ll n, ans = 0;
     cin >> n;
@@ -81,3 +81,104 @@ x + mt \equiv y + nt \pmod L \\ \Rightarrow (m-n)t \equiv y-x \pmod L \\
 $$
 
 根据拓展欧几里得算法可求解这个方程。
+
+```c++
+int mod (long long x, int y){ return (x % y + y) % y; }
+
+int exgcd (int a, int b, int &x, int &y) {
+    if (!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    int g = exgcd (b, a % b, x, y), z = x;
+    x = y, y = z - y * (a / b);
+    return g;
+}
+
+int main () {
+    scanf ("%d%d%d%d%d", &x, &y, &a, &b, &l);
+    n = mod (x - y, l), m = mod (b - a, l);
+    g = exgcd (m, l, qwq, awa);
+    if (n % g) puts ("Impossible");
+    else printf ("%d", mod ((long long) n / g * qwq, l / g));
+    return 0;
+}
+```
+
+## acWing 223 阿九大战朱最学
+
+题意：中国剩余定理模板题
+
+```c++
+// @种花家的兔兔
+// https://www.acwing.com/solution/content/164120/
+LL exgcd(LL a, LL b, LL &x, LL &y){/*...*/}
+
+int main() {
+    int n; scanf("%d", &n);
+    for (int i = 1; i <= n; i ++ ) scanf("%lld%lld", &m[i], &a[i]);
+    LL M = 1, res = 0; for (int i = 1; i <= n; i ++ ) M *= m[i];
+    for (int i = 1; i <= n; i ++ )
+    {
+        LL x, y, MM = M / m[i];
+        exgcd(MM, m[i], x, y);  // Miti \eqiuv 1 \pmod mi
+        res = (res + a[i] * MM % M * x) % M;
+    }
+    res = (res + M) % M;
+    printf("%lld\n", res);
+    return 0;
+}
+```
+
+## acwing 230 排列计数
+
+题意：求有多少种长度为 n 的序列 A，满足以下条件
+
+1. 1 至 n 这 n 个数在序列中各出现了一次
+2. 若第 i 个数 $A[i]$ 的值为 i，则称 i 是稳定的，序列恰好有 m 个数是稳定的。
+
+思路 [@种花家的兔兔](https://www.acwing.com/solution/content/164343/)：首先确定哪 m 个数是 $A[i]=i$，然后剩下的数等价于错排，用[错排公式](https://www.cnblogs.com/cafu-chino/p/10109357.html)即可解决。计算公式为：
+
+$$C_n^m * f(n-m)$$
+
+其中错排公式 $f$ 的递推式为：
+
+$$f(n) = (n-1)(f(n-1)+f(n-2))$$
+
+```c++
+int qmi(int a, int k) {/*...*/}
+
+void init() {
+    fac[0] = fac[1] = facinv[0] = facinv[1] = 1;
+    fac[2] = 2, facinv[2] = qmi(2, mod - 2);
+    f[0] = 1, f[1] = 0, f[2] = 1;
+    for (int i = 3; i < N; i ++ ) {
+        fac[i] = (LL)fac[i - 1] * i % mod;
+        facinv[i] = qmi(fac[i], mod - 2);
+        f[i] = ((LL)f[i - 1] + f[i - 2]) % mod * (i - 1) % mod;
+    }
+}
+
+int c(int a, int b) {
+    return (LL)fac[a] * facinv[b] % mod * facinv[a - b] % mod;
+}
+
+int main() {
+    init(); int T; scanf("%d", &T);
+    while (T -- ) {
+        int n, m;
+        scanf("%d%d", &n, &m);
+        int res = (LL)c(n, m) * f[n - m] % mod;
+        if (n <= m) res = 1;
+        printf("%d\n", res);
+    }
+    return 0;
+}
+```
+
+类似题目：
+
+[HDU 2048 神、上帝以及老天爷](https://acm.hdu.edu.cn/showproblem.php?pid=2048)：计算错位排列的概率，即错位排序除所有组合数。
+
+[HDU 2049 考新郎](http://acm.hdu.edu.cn/showproblem.php?pid=2049)：和本题类似。
+
