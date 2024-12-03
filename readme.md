@@ -33,6 +33,7 @@ This section will showcase the problem lists that have already been solved.
 - 0x10 [Basic Data Structure](./AGAC/0x10)
 - 0x20 [Search](./AGAC/0x20)
 - 0x30 [Math](./AGAC/0x30)
+- 0x40 [Advanced Data Structure](./AGAC/0x40)
 
 # 3. Learning material
 
