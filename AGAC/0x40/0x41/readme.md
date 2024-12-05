@@ -116,6 +116,118 @@ int main() {
 }
 ```
 
+### acwing 239 奇偶游戏
 
+题意：有一个由 0 和 1 组成的长度为 N 的序列 S。给定 M 个问题，每个问题指定区间 `S[l, r]` 中有奇数个 1 或偶数个 1。求第一个出现矛盾的位置。
 
+思路：
 
+如果用 `sum` 表示 S 的前缀和，那么如果 `S[l, r]` 有偶数个 1，则等价于 `sum[l-1]` 和 `sum[r]` 的奇偶性相同。如果 `S[l, r]` 有奇数个 1，则等价于 `sum[l-1]` 和 `sum[r]` 的奇偶性不同。
+
+本题的传递关系分为三种：
+
+1. x1 与 x2 奇偶性相同，x2 与 x3 奇偶性相同，则 x1 与 x3 奇偶性相同（等于关系）
+2. x1 与 x2 奇偶性相同，x2 与 x3 奇偶性不同，则 x1 与 x3 奇偶性不同
+3. x1 与 x2 奇偶性不同，x2 与 x3 奇偶性不同，则 x1 与 x3 奇偶性相同
+
+另外，序列长度远大于问题数，所以需要使用离散化。
+
+```c++
+void read_discrete() { // 读入、离散化
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++) {
+		char str[5];
+		scanf("%d%d%s", &query[i].l, &query[i].r, str);
+		query[i].ans = (str[0] == 'o' ? 1 : 0);
+		a[++t] = query[i].l - 1;
+		a[++t] = query[i].r;
+	}
+	sort(a + 1, a + t + 1);
+	n = unique(a + 1, a + t + 1) - a - 1;
+}
+```
+
+对于每个问题，设在离散化后 `l-1` 和 `r` 的值分别为 x 和 y，设 ans 表示该问题的奇偶性。
+
+#### 1. 边带权
+
+发现本题的传递关系可以用异或的方式表示。设边权为 `d[x]`：
+
+1. 若 `d[x]=0` 则说明 `fa[x] <- x` 的奇偶性相同。
+2. 若 `d[x]=1` 则说明 `fa[x] <- x` 的奇偶性不同。
+
+先检查 x 和 y 是否在同一个集合内（奇偶关系是否已知）。若在一个集合内（get 执行完边权就更新了），`d[x]^d[y]` 即为区间的奇偶性。若这个值不等于 ans 则说明出现矛盾。
+
+若不在同一个集合内，则合并两个集合。首先已经通过 get 拿到了 x 和 y 的根节点，并更新完边权。此时肯定不会有矛盾，令这句话是真的，则 `d[x] ^ d[x->y] ^ d[y] = ans`，即合并两集合并更新边权 `d[x->y] = d[x] ^ d[y] ^ ans`。
+
+```c++
+int get(int x) {
+	if (x == fa[x]) return x;
+	int root = get(fa[x]);
+	d[x] ^= d[fa[x]];
+	return fa[x] = root;
+}
+int main() {
+	read_discrete();
+	for (int i = 1; i <= n; i++) fa[i] = i;
+	for (int i = 1; i <= m; i++) {
+		// 求出l-1和r离散化之后的值
+		int x = lower_bound(a + 1, a + n + 1, query[i].l - 1) - a;
+		int y = lower_bound(a + 1, a + n + 1, query[i].r) - a;
+		// 执行get函数，得到树根，并进行路径压缩
+		int p = get(x), q = get(y);
+		if (p == q)  // 已经在同一集合内
+			if ((d[x] ^ d[y]) != query[i].ans) { // 矛盾，输出
+				cout << i - 1 << endl; return 0;
+			}
+		else { // 不在同一集合，合并
+			fa[p] = q; d[p] = d[x] ^ d[y] ^ query[i].ans;
+		}
+	}
+	cout << m << endl; // 没有矛盾
+}
+```
+
+#### 2. 扩展域
+
+把每个变量 x 拆成两个节点 `x_odd` （`sum[x]` 是偶数）和 `x_even`（`sum[x]` 是奇数）可以把这两个节点称为 x 的偶数域和奇数域。
+
+1. 若 ans 为 0，则合并 `x_odd->y_odd` 和 `x_even->y_even`，这表示 x 为奇数和 y 为奇数可以相互推出，x 为偶数和 y 为偶数可以相互推出。
+2. 若 ans 为 1，则合并 `x_even->y_odd` 和 `x_even->y_odd`，这表示 x 为奇数和 y 为偶数可以相互推出，x 为偶数和 y 为奇数可以相互推出。
+
+实际上，这种做法相当于在无向图上维护节点之间的联通情况，只是扩展了多个域来应对多种传递关系。
+
+在处理每个问题的时候先检查是否与 ans 矛盾。若 x 和 y 对应的 `x_odd` 和 `y_odd` 在同一个集合内，则说明 x 和 y 已知奇偶性相同。若 x 和 y 对应的 `x_odd` 和 `y_even` 在同一个集合内，则说明 x 和 y 已知奇偶性不同。
+
+```c++
+int get(int x) {
+	if (x == fa[x]) return x;
+	return fa[x] = get(fa[x]);
+}
+int main() {
+	read_discrete();
+	for (int i = 1; i <= 2 * n; i++) fa[i] = i;
+	for (int i = 1; i <= m; i++) {
+		// 求出l-1和r离散化之后的值
+		int x = lower_bound(a + 1, a + n + 1, query[i].l - 1) - a;
+		int y = lower_bound(a + 1, a + n + 1, query[i].r) - a;
+		int x_odd = x, x_even = x + n;
+		int y_odd = y, y_even = y + n;
+		if (query[i].ans == 0) { // 回答奇偶性相同
+			if (get(x_odd) == get(y_even)) { // 与已知情况矛盾
+				cout << i - 1 << endl; return 0;
+			}
+			fa[get(x_odd)] = get(y_odd); // 合并
+			fa[get(x_even)] = get(y_even);
+		}
+		else { // 回答奇偶性不同
+			if (get(x_odd) == get(y_odd)) { // 与已知情况矛盾
+				cout << i - 1 << endl; return 0;
+			}
+			fa[get(x_odd)] = get(y_even); // 合并
+			fa[get(x_even)] = get(y_odd);
+		}
+	}
+	cout << m << endl; return 0;// 没有矛盾
+}
+```
