@@ -87,7 +87,7 @@ void merge(int i, int j) {
 
 在没有路径压缩的情况下，`fa[x]` 就表示排在第 x 号战舰前面的那个战舰的编号，一个集合的代表就是位于最前边的战舰。另外，让树上每条边带权值 1，这样树上两点之间的距离减 1 就是二者之间间隔的战舰数量。
 
-在考虑路径压缩的情况下，我们额外建立一个数组 d，`d[x]` 记录战舰 x 与 `fa[x]` 之间的边的权值。在路径压缩把 x 直接指向树根的同时，我们把 `d[x]` 更新为从 x 到树根的路径上的所有边权之和。对 get 函数稍加修改，即可实现对 `d[x]` 数组的维护。
+在考虑路径压缩的情况下，我们额外建立一个数组 d，`d[x]` 记录战舰 x 与 `fa[x]` 之间的边的权值。在路径压缩把 x 直接指向树根的同时，我们把 `d[x]` 更新为从 x 到树根的路径上的所有边权之和。对 get 函数稍加修改，即可实现对 `d[x]` 数组的维护。（注：`d[x]` 在所有情况下都是到父节点的权值，没更新的时候也是。）
 
 ```c++
 // @秦淮岸灯火阑珊 https://www.acwing.com/solution/content/1005/
@@ -151,7 +151,7 @@ void read_discrete() { // 读入、离散化
 
 #### 1. 边带权
 
-发现本题的传递关系可以用异或的方式表示。设边权为 `d[x]`：
+发现本题的传递关系可以用异或的方式表示。设边权为 `d[x]`，初始值为 0：
 
 1. 若 `d[x]=0` 则说明 `fa[x] <- x` 的奇偶性相同。
 2. 若 `d[x]=1` 则说明 `fa[x] <- x` 的奇偶性不同。
@@ -217,17 +217,176 @@ int main() {
 			if (get(x_odd) == get(y_even)) { // 与已知情况矛盾
 				cout << i - 1 << endl; return 0;
 			}
-			fa[get(x_odd)] = get(y_odd); // 合并
+			fa[get(x_odd)] = get(y_odd);  // 合并
 			fa[get(x_even)] = get(y_even);
 		}
 		else { // 回答奇偶性不同
 			if (get(x_odd) == get(y_odd)) { // 与已知情况矛盾
 				cout << i - 1 << endl; return 0;
 			}
-			fa[get(x_odd)] = get(y_even); // 合并
+			fa[get(x_odd)] = get(y_even);  // 合并
 			fa[get(x_even)] = get(y_odd);
 		}
 	}
 	cout << m << endl; return 0;// 没有矛盾
 }
 ```
+
+### acwing 240 食物链
+
+动物王国中有三类动物 A,B,C，这三类动物的食物链构成了有趣的环形。A 吃 B，B 吃 C，C 吃 A。
+
+现有 N 个动物，以 1∼N 编号。每个动物都是 A,B,C 中的一种，但是我们并不知道它到底是哪一种。
+
+给两个说法：X 和 Y 是同类或 X 吃 Y。判断有几次当前的话与前面的某些真的话冲突。
+
+#### 思路 1. 边带权
+
+```c++
+// @sunznx：https://www.acwing.com/solution/content/6109/
+// 设 d[x] % 3 为 x -> parent[x] 的边权，其中 0 则 x 和 parent[x] 同类；
+// 1 则 x 吃 parent[x]，2 则 parent[x] 吃 x。
+void init() { for (int i = 0; i <= n; i++) parent[i] = i, d[i] = 0; }
+
+int find(int x) {
+	if (x == parent[x]) return x;
+	int root = get(parent[x]);
+	d[x] += d[parent[x]];
+	return parent[x] = root;
+}
+
+bool D1(int x, int y) {
+    int p1 = find(x), p2 = find(y);
+    if (p1 == p2) return d[x] % M == d[y] % M;  // 在一个集合内
+    // x -> ... -> p1, y -> ... -> p2
+    // x 和 y 的关系为 x -> ... -> p1 -> p2 -> ... -> y
+    // = d[x] - d[p2 -> p1] - d[y] = 0
+    parent[p2] = p1; d[p2] = ((d[x] - d[y]) + M) % M;
+    return true;
+}
+
+bool D2(int x, int y) {
+    int p1 = find(x), p2 = find(y);
+    if (p1 == p2) return d[x] % M == (d[y]+1) % M;
+    // 同上 = d[x] - d[p2 -> p1] - d[y] = 1
+    parent[p2] = p1; d[p2] = ((d[x]-d[y]-1) + M) % M;
+    return true;
+}
+
+int main(void) {
+    int res = 0; cin >> n >> k; init();
+    while (k--) {
+        cin >> D >> x >> y;
+        if (x > n || y > n) res += 1;
+        else if (D == 1 && D1(x, y) == false) res += 1;
+        else if (D == 2 && D2(x, y) == false) res += 1;
+    }
+    cout << res << endl; return 0;
+}
+```
+
+#### 思路 2. 扩展域
+
+```c++
+// @目目目：https://www.acwing.com/solution/content/113385/
+int find(int x) { /*...*/ }
+
+int main() {
+    cin >> n >> m; for (int i = 1; i < M; i++) p[i] = i;
+    while (m--) {
+        int d, a, b; scanf("%d%d%d", &d, &a, &b);
+        if (a > n || b > n) { res ++; continue; }
+        if (a == b) { if (d == 2) res ++; continue; }
+        if (d == 1) {
+            // 如果 a 吃 b 或者 b 吃 a ，则 a 与 b 是同类是假话
+            if (find(a) == find(b + N) || find(a + N) == find(b)) 
+                { res++; continue; }
+
+            p[find(a)] = find(b); p[find(a + N)] = find(b + N);
+            p[find(a + N * 2)] = find(b + N * 2);
+        }
+        else {
+            // 如果 b 吃 a 或者 a 与 b 是同类 ，则 a 吃 b 是假话
+            if (find(a + N) == find(b) || find(a) == find(b))
+                { res++; continue; }
+
+            p[find(a)] = find(b + N); p[find(a + N)] = find(b + N * 2);
+            p[find(a + N * 2)] = find(b);
+        }
+    }
+    cout << res; return 0;
+}
+```
+
+## 扩展
+
+### luogu P3183 食物链
+
+题目：给 n 个物种和 m 个能量流动关系，求其中完整的食物链条数。其中不会有环，单独的一种孤立生物不算食物链。
+
+思路：只是名字叫食物链，和并查集没什么关系。这题拓扑排序即可（更新入度时累加方案数）。
+
+```c++
+int toposort() {
+	queue <int> q; int ans=0;
+	for(int i=1; i<=n; i++) // 单个点不算方案
+	    if(!rd[i] && e[i].size()) q.push(i), f[i]=1; 
+	while(!q.empty()) {
+		int x=q.front(); q.pop();
+		if(!e[x].size()) ans+=f[x];
+		for(auto t : e[x]) {
+			f[t]+=f[x], rd[t]--; // f来统计方案
+			if(!rd[t]) q.push(t);
+		}
+	}
+	return ans;
+}
+```
+
+### UVA 11987 Almost Union-Find
+
+题目：有 n 个元素，要求支持三种操作：合并两个元素的集合，把元素移动到另一个元素的集合，查询集合元素个数及元素之和。操作数量小于 1e5。
+
+思路 [@Mr_think](https://www.luogu.com.cn/article/sbawem6r)：操作一和操作三都可以用并查集实现，难点在于第二个操作。容易想到一种错误实现方式，即把需要移动的元素 `x` 的 `fa[x]` 直接设为另一个元素集合的根节点。错误原因是 `x` 可能还有子节点。
+
+如果 `x` 是叶子节点，就可以直接修改 `fa[x]`。实际上，使用虚点可以保证 `x` 在叶子上。
+
+![虚点](https://cdn.luogu.com.cn/upload/image_hosting/gvw2eccx.png)
+
+```c++
+int find(int x) { /*...*/ }
+int main(){
+	while(scanf("%d%d",&n,&m)!=EOF){
+		for(int i=1;i<=n;i++) fa[i]=i+n;  // i+n 即为虚点
+		for(int i=n+1;i<=n+n;i++)
+			fa[i]=i,sz[i]=1,sum[i]=i-n;  // 虚点的父节点设为自身
+		
+		for(int i=1;i<=m;i++){
+			scanf("%d",&opt);
+			if(opt==1){  // 合并操作与无虚点相同
+				scanf("%d%d",&p,&q);
+				int u=find(p),v=find(q);
+				if(u==v)continue;
+				fa[u]=v;
+				sz[v]+=sz[u];
+				sum[v]+=sum[u]; 
+			}else if(opt==2){  // 移动操作更改父节点的记录
+				scanf("%d%d",&p,&q);
+				int u=find(p),v=find(q);
+				if(u==v)continue;
+				fa[p]=v;  // v 也是虚点
+				sz[u]--;sz[v]++;
+				sum[u]-=p;sum[v]+=p;
+			}else{
+				scanf("%d",&p);
+				printf("%d %lld\n",sz[find(p)],sum[find(p)]);
+			}
+		}
+	}
+	return 0;
+}
+```
+
+类似题目：
+
+[SP5150 Junk-Mail Filter](https://www.luogu.com.cn/problem/SP5150)：维护合并和删除操作，记录最后还剩多少个集合。
