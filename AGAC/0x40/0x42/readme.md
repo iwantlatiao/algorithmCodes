@@ -37,5 +37,10 @@ while (x > 0) {
 
 1. 节点 `c[x]` 保存以它为根的子树中所有叶节点的和
 2. 节点 `c[x]` 覆盖了 a 中 `lowbit(x)` 个元素
-3. 除了树根，节点 `c[x]` 的父节点是 `c[x + lowbit(x)]`
+3. 除了树根，节点 `c[x]` 的父节点是 `c[x + lowbit(x)]`（ `lowbit(x)` 体现了子节点二分了父节点的一个子区间）
 4. 树的深度为 $O(\log n)$
+
+TODO：[LIS 的树状数组做法](https://writings.sh/post/find-number-of-lis)
+
+[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)
+
