@@ -295,28 +295,34 @@ height  1 2 3 4 5
         e ? d ? ?
 ```
 
-所以实际上每次安置奶牛 `i` 的位置是，从前往后数，跳过已经安置好的奶牛，的第 `A[i]+1` 个空位。为了方便维护，不妨设数组 `p[x]` 初始值均为 `1` ，含义是身高为 `x` 的奶牛是否已经安置（ `=1` 未安置； `=0` 已安置）。假设第 `i` 头奶牛满足 `A[i] = k` ，这样实际就是先找 `p` 数组的前缀和至少为 `k+1` 的左边界，然后将该位设为已安置。所以可以用树状数组进行维护。
+所以实际上每次安置奶牛 `i` 的位置是，从前往后数，跳过已经安置好的奶牛，的第 `A[i]+1` 个空位。为了方便维护，不妨设数组 `b[x]` 为零一数组，初始值均为 `1` ，含义是身高为 `x` 的奶牛是否已经安置（ `=1` 未安置； `=0` 已安置）。假设第 `i` 头奶牛满足 `A[i] = k` ，这样实际就是先找 `b` 数组的前缀和至少为 `k+1` 的左边界，然后将该位设为已安置。所以可以用树状数组进行维护。
 
 #### 方法一：树状数组 + 二分，单次时间复杂度 $O(\log^2 n)$
 
 ```c++
- for (int i = n; i >= 1; --i) {
-     int l = 1, r = n;
-     while (l < r) {
-         int mid = (l + r) >> 1;
-         if (ask(mid) < seq[i] + 1) l = mid + 1;
-         else r = mid;
-     }
-     height[i] = l;  // 第 i 头牛的高度为 l
-     modify(l, -1);
- }
+for (int i = n; i >= 1; --i) {
+    int l = 1, r = n;
+    while (l < r) {
+        int mid = (l + r) >> 1;
+        if (ask(mid) < A[i] + 1) l = mid + 1;
+        else r = mid;
+    }
+    height[i] = l;  // 第 i 头牛的高度为 l
+    modify(l, -1);  // 置零
+}
 ```
 
 #### 方法二：树状数组 + 倍增，单次时间复杂度 $O(\log n)$
+
+倍增的思想为 `以 2 的整数次幂为步长，能累加则累加` 。而树状数组恰好为我们维护了区间长度为 $2^x$ 的区间的信息。所以我们可以这样沿着树状数组查询：
+
+1. 初始化两个变量，当前枚举到的位置 `ans=0` 和当前枚举到的位置的前缀和 `sum=0` 。
+2. 从 $\lfloor \log n \rfloor \to 0$ 倒序考虑每个整数 `p` 。对于每个 `p` ，若 `ans + 2^p <= n` 且 `sum + c[ans + 2^p] < k` ，则令 `sum += c[ans + 2^p]`
+3. 最后 `height[i] = ans + 1` 即为所求
 
 
 ## TODO
 
 TODO：[LIS 的树状数组做法](https://writings.sh/post/find-number-of-lis)
 
-[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)m
+[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)
