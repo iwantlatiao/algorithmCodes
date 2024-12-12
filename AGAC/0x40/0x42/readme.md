@@ -230,6 +230,7 @@ int getmax(int l, int r) {
         ans = max(ans, a[r]); --r;
         // 注意，循环条件不要写成 r - lowbit(r) + 1 >= l
         // 否则 l = 1 时，r 跳到 0 会死循环
+        // 不过 r - lowbit(r) + 1 >= l && r > 0 好像也可以
         for (; r - lowbit(r) >= l; r -= lowbit(r))
             ans = max(ans, C[r]);
     }
@@ -262,9 +263,60 @@ void update(int x, int v) {
 }
 ```
 
+## 一些好题
+
+### acwing 244 谜一样的牛
+
+题意：有 n 头奶牛，已知它们的身高为 1 到 n 且各不相同，但不知道每头奶牛的具体身高。现在这 n 头奶牛站成一列，已知第 i 头牛前面有 Ai 头牛比它低，求每头奶牛的身高。
+
+思路：
+
+假设现在有 5 头奶牛，A 数组如下所示：
+
+```
+cow     a b c d e
+A[i]    / 1 2 1 0
+```
+
+如果最后一头奶牛的前面有 k 头牛比它低，那么最后一头奶牛的身高应该是第 k+1 小。如此时 `A[5] = 0` 头牛比他低，那么最后一头奶牛的身高就可以确定是 `A[5] + 1 = 1` 。
+
+```
+cow     a b c d e
+A[i]    / 1 2 1 0
+
+height  1 2 3 4 5
+        e ? ? ? ?
+```
+
+然后再看倒数第二头奶牛。因为 `A[4] = 1`，所以在除了奶牛 `e` 应该处于第二小的位置。
+
+```
+height  1 2 3 4 5
+        e ? d ? ?
+```
+
+所以实际上每次安置奶牛 `i` 的位置是，从前往后数，跳过已经安置好的奶牛，的第 `A[i]+1` 个空位。为了方便维护，不妨设数组 `p[x]` 初始值均为 `1` ，含义是身高为 `x` 的奶牛是否已经安置（ `=1` 未安置； `=0` 已安置）。假设第 `i` 头奶牛满足 `A[i] = k` ，这样实际就是先找 `p` 数组的前缀和至少为 `k+1` 的左边界，然后将该位设为已安置。所以可以用树状数组进行维护。
+
+#### 方法一：树状数组 + 二分，单次时间复杂度 $O(\log^2 n)$
+
+```c++
+ for (int i = n; i >= 1; --i) {
+     int l = 1, r = n;
+     while (l < r) {
+         int mid = (l + r) >> 1;
+         if (ask(mid) < seq[i] + 1) l = mid + 1;
+         else r = mid;
+     }
+     height[i] = l;  // 第 i 头牛的高度为 l
+     modify(l, -1);
+ }
+```
+
+#### 方法二：树状数组 + 倍增，单次时间复杂度 $O(\log n)$
+
 
 ## TODO
 
 TODO：[LIS 的树状数组做法](https://writings.sh/post/find-number-of-lis)
 
-[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)
+[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)m
