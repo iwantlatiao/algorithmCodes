@@ -317,8 +317,31 @@ for (int i = n; i >= 1; --i) {
 倍增的思想为 `以 2 的整数次幂为步长，能累加则累加` 。而树状数组恰好为我们维护了区间长度为 $2^x$ 的区间的信息。所以我们可以这样沿着树状数组查询：
 
 1. 初始化两个变量，当前枚举到的位置 `ans=0` 和当前枚举到的位置的前缀和 `sum=0` 。
-2. 从 $\lfloor \log n \rfloor \to 0$ 倒序考虑每个整数 `p` 。对于每个 `p` ，若 `ans + 2^p <= n` 且 `sum + c[ans + 2^p] < k` ，则令 `sum += c[ans + 2^p]`
+2. 从 $\lfloor \log n \rfloor \to 0$ 倒序考虑每个整数 `p` 。对于每个 `p` ，若 `ans + 2^p <= n` 且 `sum + c[ans + 2^p] < k + 1` ，则令 `sum += c[ans + 2^p]` （找到小于 `k+1` 的最右端点）
 3. 最后 `height[i] = ans + 1` 即为所求
+
+```c++
+for (int i = n; i; i--) {
+    int ans = 0, sum = 0;
+    for (int j = t; j >= 0; j--)
+        if (ans + p[j] <= n && sum + c[ans+p[j]] < a[i] + 1) {
+            sum += c[ans+p[j]];
+            ans += p[j];
+        }
+    add(h[i] = ans + 1);
+}
+```
+
+### LIS 的树状数组 DP 优化
+
+回忆 LIS 问题有[两种转移方程](https://leetcode.cn/problems/longest-increasing-subsequence/solutions/147667/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/)：
+
+```c++
+1. dp[i] 表示前 i 个元素，以第 i 个数字结尾的 LIS 长度，且 nums[i] 必须被选取。
+dp[i] = max(dp[j]) + 1, 0 <= j < i && num[j] < num[i];
+ans = max(dp[i])
+2. d[i] 表示长度为 i 的 LIS 的末尾元素最小值
+```
 
 
 ## TODO
