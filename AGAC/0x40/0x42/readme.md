@@ -341,6 +341,8 @@ for (int i = n; i; i--) {
 dp[i] = max(dp[j]) + 1, 0 <= j < i && num[j] < num[i];
 ans = max(dp[i])
 2. d[i] 表示长度为 i 的 LIS 的末尾元素最小值
+若 nums[i] > d[len] 则直接 d[++len] = nums[i]
+否则二分查找第一个小于的位置 
 ```
 
 
