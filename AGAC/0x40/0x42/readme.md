@@ -340,14 +340,17 @@ for (int i = n; i; i--) {
 1. dp[i] 表示前 i 个元素，以第 i 个数字结尾的 LIS 长度，且 nums[i] 必须被选取。
 dp[i] = max(dp[j]) + 1, 0 <= j < i && num[j] < num[i];
 ans = max(dp[i])
-2. d[i] 表示长度为 i 的 LIS 的末尾元素最小值
+2. 根据耐心排序，用 d[i] 表示长度为 i 的 LIS 的末尾元素最小值 
 若 nums[i] > d[len] 则直接 d[++len] = nums[i]
-否则二分查找第一个小于的位置 
+否则二分查找第一个大于 num[i] 的位置替换 d[k+1] = nums[i]
 ```
+
 
 
 ## TODO
 
 TODO：[LIS 的树状数组做法](https://writings.sh/post/find-number-of-lis)
+
+狄尔沃斯定理
 
 [@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)
