@@ -332,7 +332,7 @@ for (int i = n; i; i--) {
 }
 ```
 
-### LIS 的树状数组 DP 优化
+### LIS 计数的树状数组 DP 优化
 
 回忆 LIS 问题有[两种转移方程](https://leetcode.cn/problems/longest-increasing-subsequence/solutions/147667/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/)：
 
@@ -340,16 +340,78 @@ for (int i = n; i; i--) {
 1. dp[i] 表示前 i 个元素，以第 i 个数字结尾的 LIS 长度，且 nums[i] 必须被选取。
 dp[i] = max(dp[j]) + 1, 0 <= j < i && num[j] < num[i];
 ans = max(dp[i])
+时间复杂度为 O(n^2)
+
 2. 根据耐心排序，用 d[i] 表示长度为 i 的 LIS 的末尾元素最小值 
 若 nums[i] > d[len] 则直接 d[++len] = nums[i]
 否则二分查找第一个大于 num[i] 的位置替换 d[k+1] = nums[i]
+时间复杂度为 O(nlogn)
 ```
 
+模仿方程 1，[考虑用树状数组维护 LIS 的长度和个数](https://writings.sh/post/find-number-of-lis)。方程 1 中的 `i` 表示第几个元素，而在此处表示以值域 `1~i` 结尾的 LIS 长度。
 
+```c++
+dp[x] = max(dp[v], for each v < x) + 1;
+```
+
+我们还需要求 LIS 的个数。实际上我们可以同时维护这两个信息。
+
+```c++
+// f 代表区间内最大 dp 值，g 代表区间内最大 dp 值的个数
+struct P { int f, g; };
+vector<P> c(n+1);
+```
+
+对于区间查询，每次查询 `1~a[i]-1` 的信息。
+
+```c++
+// 从右往左沿着树状数组往上查询
+// 1. 若当前 f 比树上的 f 小，当前 g = 树上 g
+// 2. 若当前 f 等于树上 f，当前 g += 树上 g
+// 3. 若当前 f 大于树上 f，不需对 g 操作
+// 4. f 更新为最大值
+P ask(int x) {
+    int f = 0, g = 0;
+    for (; x; x -= lowbit(x)) {
+        if (f < c[x].f) g = 0;
+        if (f <= c[x].f) g += c[x].g;
+        f = max(f, c[x].f);
+    }
+    return {f, g};
+}
+```
+
+进行完区间查询后，对 `a[i]` 单点修改 `f += 1, g = max(g, 1)` 。
+
+```c++
+// 沿着树状数组往父节点更新
+// 1. 若修改 f 比树上的 f 小，树上的 f 和 g 无需变化
+// 2. 若修改 f 等于树上的 f ，树上的 g += p.g
+// 3. 若修改 f 比树上的 f 大，由于其他儿子的 f 肯定比修改 f 小，所以
+//    只需要统计修改 f 对父节点的贡献即可，即树上的 g = p.g
+// 4. f 更新为最大值
+void update(int x, const P& p) {
+    for (; x <= n; x += lowbit(x)) {
+        if (c[x].f < p.f) c[x].g = 0;
+        if (c[x].f <= p.f) c[x].g += p.g;
+        c[x].f = max(c[x].f, p.f);
+    }
+}
+
+int main() {
+    int n = a.size(), m = discrete(a);
+    BIT b(m);
+    for (auto x : a) {
+        auto [f, g] = b.ask(x - 1);
+        b.update(x, {f + 1, max(g, 1)});
+    }
+    return b.ask(m).g;
+}
+```
+
+在上一节我们讨论过维护最值是不可差分问题，但在此处由于最值的更新是单增的，所以可以采用上述 $O(n\log n)$ 方式实现。
 
 ## TODO
-
-TODO：[LIS 的树状数组做法](https://writings.sh/post/find-number-of-lis)
 
 狄尔沃斯定理
 
