@@ -332,9 +332,9 @@ for (int i = n; i; i--) {
 }
 ```
 
-### LIS 计数的树状数组 DP 优化
+### Leetcode 673. LIS 计数
 
-回忆 LIS 问题有[两种转移方程](https://leetcode.cn/problems/longest-increasing-subsequence/solutions/147667/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/)：
+回忆 LIS 问题有[两种转移方程](https://leetcode.cn/problems/number-of-longest-increasing-subsequence/solutions/1007075/zui-chang-di-zeng-zi-xu-lie-de-ge-shu-by-w12f/)：
 
 ```c++
 1. dp[i] 表示前 i 个元素，以第 i 个数字结尾的 LIS 长度，且 nums[i] 必须被选取。
@@ -410,6 +410,8 @@ int main() {
 ```
 
 在上一节我们讨论过维护最值是不可差分问题，但在此处由于最值的更新是单增的，所以可以采用上述 $O(n\log n)$ 方式实现。
+
+
 
 ## TODO
 
