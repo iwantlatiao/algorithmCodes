@@ -344,7 +344,7 @@ ans = max(dp[i])
 
 2. 根据耐心排序，用 d[i] 表示长度为 i 的 LIS 的末尾元素最小值 
 若 nums[i] > d[len] 则直接 d[++len] = nums[i]
-否则二分查找第一个大于 num[i] 的位置替换 d[k+1] = nums[i]
+否则二分查找第一个大于等于 num[i] 的位置替换 d[k+1] = nums[i]
 时间复杂度为 O(nlogn)
 ```
 
