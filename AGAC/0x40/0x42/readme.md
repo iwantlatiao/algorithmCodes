@@ -453,7 +453,107 @@ int main(){
 
 题意：在 n*m 个方格上给 w 个点，求方格里每个点正上下左右各选 k 个点的方案数。其中坐标范围在 1e9，给点个数在 1e5 ，k 小于 10。
 
-[@K8He](https://www.luogu.com.cn/article/nzah6p21) 思路：
+[@Lance1ot](https://www.luogu.com.cn/article/f49g5f4n) 思路：
+
+首先发现坐标范围远大于点的数量，所以需要先分别对两个轴做离散化。然后发现点的个数在 1e5 以内，所以需要的时间复杂度大概在 $O(w\log w)$ 。
+
+我们先考虑暴力做法：扫每个点可以得到每个点上下左右点的个数，然后进行组合数计算。假设上下左右各有 `t` 、 `b` 、 `l` 、 `r` 个，那么每个点的方案数就是
+
+$$C_t^k * C_b^k * C_l^k * C_r^k$$
+
+这样的时间复杂度是离散化后方格数量的平方，即 $O(w^2)$ 。
+
+注意到如果两个点的 `x` 坐标相同，且在这一个 `x` 沿着 `y` 坐标看没有点在这两个点之间（两个点之间的空隙），那么这两个点之间的空隙保证上面的点数相同、下面的点数相同。即 $C_t^k * C_b^k$ 相同。所以可以调整扫描每个点的顺序，对点按 `x` 为第一关键词、 `y` 为第二关键词排序。这样就可以出现 `x` 坐标相同的情况。固定 `x` 坐标从下往上扫描时，每碰到一个点，就更改一次 $C_t^k * C_b^k$ 即可。所以接下来就把问题转化为快速求 $C_l^k * C_r^k$ 。
+
+我们发现两个点之间有很多空隙，如果对每个空隙都求一次 $C_l^k * C_r^k$ 显然不行，所以需要实现区间查询。在扫描每一个点的时候，我们可以对 `y` 坐标位置的 $C_l^k * C_r^k$ 做单点修改。所以可以用树状数组实现。在此树状数组实际上维护的是同一个 `x` 坐标下，空隙位置的 $C_l^k * C_r^k$ 。所以就可以把时间复杂度降到 $O(w\log w)$ 。
+
+```c++
+//-----------------------------------
+void init(int x)//组合数
+{
+    C[0][0]=1;
+    for(int i=1;i<=x;i++) {
+        C[i][0]=1;
+        for(int j=0;j<=10;j++)
+            C[i][j]=(C[i-1][j]+C[i-1][j-1])%mode;
+    }
+    return;
+}
+//-----------------------------------
+void account(int n)//统计离散化后每一列，每一行共有多少个树
+{
+    int nowX,nowY;
+    for(int i=1;i<=n;i++)
+    {
+        nowX=check(baseX,lenX,T[i].x);
+        nowY=check(baseY,lenY,T[i].y);
+        totY[nowY]++;
+        totX[nowX]++;
+        T[i].X=nowX;T[i].Y=nowY;//记录离散化后每棵树的位置
+    }
+    length=lenY;
+}
+void add(int Y,int K)//将一颗树填进树状数组
+{
+    if(last[Y])//如果这棵树的Y之前有过值，应该先将这个值在树状数组中减去
+    {
+        //last为上一次的值
+        insert(-last[Y],Y);
+    	last[Y]=0;//归零
+	}
+    Layt[Y]++;//这个Y中已经被遍历过的树的数量+1
+    if(Layt[Y]>=K&&totY[Y]-Layt[Y]>=K)//新加的这一棵树在左右满足条件
+    {
+        long long pas=(C[Layt[Y]][K]*C[totY[Y]-Layt[Y]][K])%mode;
+        insert(pas,Y);//插入
+        last[Y]=pas;//记录
+    }
+}
+long long clac(int l,int r)
+{
+	if(l>r)	return 0;//防止错误，错误的原因是两棵树之间有可能没有空隙
+    return query(l,r);//树状数组查询
+}
+void work(int n,int K)
+{
+    int nowX=-1,now;//nowX为上一次处理的X位置，now为相同 x 的计数器
+    for(int i=1;i<=n;i++)  // 按照先 x 后 y 的排序依次处理每一个点
+    {
+        if(nowX!=T[i].X)//和上一次不在同一个X中
+        {
+            now=0;//计数器归零
+            nowX=T[i].X;//赋值
+        }
+        now++;//计数器++
+        if(totX[nowX]-now>=k&&now>=K&&T[i+1].X==nowX)
+            ans=(ans+(C[now][k]*(clac(T[i].Y+1,T[i+1].Y-1)*C[totX[nowX]-now][k])%mode)%mode)%mode;
+        /*
+        *   totX[nowX]-now>=k是判断是否上面树的数量可以进行计算
+        *   now>=K是判断下面的树的数量是否可以进行计算
+        *   T[i+1].X==nowX 特判第i棵树和第i+1棵树在同一X
+        *   ------------------------
+        *   clac(T[i].Y+1,T[i+1].Y-1)是计算第i棵和第i+1棵之间空隙中的方案总数
+        *   ------------------------
+        */
+        add(T[i].Y,K);  //将这棵树的贡献加入树状数组
+    }
+}
+
+int main() {
+    scanf("%d%d%d",&N,&M,&w);
+    for(int i=1;i<=w;i++) {
+        scanf("%d%d",&T[i].x,&T[i].y);
+        baseX[i]=T[i].x; baseY[i]=T[i].y;
+    }
+    scanf("%d",&k);
+    unique(baseX,lenX=w); unique(baseY,lenY=w);  // 去重
+    sort(T+1,T+1+w);  // 按照 x y 排序
+    init(w);  // 初始化组合数
+    account(w);  // 统计离散化后每一列，每一行共有多少个树
+    work(w,k);  // 解决问题
+    printf("%lld",(ans+mode)%mode);  // 输出答案
+}
+```
 
 ## TODO
 
