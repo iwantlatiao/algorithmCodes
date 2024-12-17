@@ -1,4 +1,4 @@
-# 树状数组
+# 0x42 树状数组
 
 [OI Wiki 对树状数组的介绍](https://oi-wiki.org/ds/fenwick)
 
@@ -554,7 +554,3 @@ int main() {
     printf("%lld",(ans+mode)%mode);  // 输出答案
 }
 ```
-
-## TODO
-
-[@lfool 线段树详解](https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/)
