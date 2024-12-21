@@ -308,6 +308,190 @@ int main() {
 
 延迟标记的作用是，除了在修改指令直接划分成的 $O(\log N)$ 个节点之外，对任意节点的修改都延迟到 `后续操作到达该节点的父节点` 时再执行。
 
+以 acwing 243 为例：
+
+```c++
+// @一只野生彩色铅笔 https://www.acwing.com/solution/content/44886/
+
+struct Node {
+    int l, r;
+    LL sum, add;
+}tr[N * 4];
+
+void pushup(int u) {
+    tr[u].sum = tr[u << 1].sum + tr[u << 1 | 1].sum;
+}
+
+void pushdown(int u) {
+    auto &root = tr[u], &left = tr[u << 1], &right = tr[u << 1 | 1];
+    if (root.add == 0) return;
+    //传递懒标记，更新子树
+    left.add += root.add, left.sum += (LL) (left.r - left.l + 1) * root.add;
+    right.add += root.add, right.sum += (LL) (right.r - right.l + 1) * root.add;
+    root.add = 0; //删除父结点懒标记
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, w[l], 0};
+    else {
+        tr[u] = {l, r};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int v) {
+    if (l <= tr[u].l && tr[u].r <= r) {  // 完全覆盖
+        tr[u].sum += (tr[u].r - tr[u].l + 1) * v;
+        tr[u].add += v;  // 懒标记
+    } else {
+        pushdown(u);  // 标记下传
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid) modify(u << 1, l, r, v);
+        if (r > mid) modify(u << 1 | 1, l, r, v);
+        pushup(u);
+    }
+}
+
+LL query(int u, int l, int r) {
+    if (l <= tr[u].l && tr[u].r <= r) return tr[u].sum;
+    pushdown(u);  // 标记下传
+    int mid = tr[u].l + tr[u].r >> 1;
+    LL v = 0;
+    if (l <= mid) v = query(u << 1, l, r);
+    if (r > mid) v += query(u << 1 | 1, l, r);
+    return v;
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; ++i) scanf("%d", &w[i]);
+    build(1, 1, n);
+
+    char op[2]; int l, r, t;
+    while (m -- ) {
+        scanf("%s%d%d", op, &l, &r);
+        if (*op == 'Q') printf("%lld\n", query(1, l, r));
+        else {
+            scanf("%d", &t); modify(1, l, r, t);
+        }
+    }
+    return 0;
+}
+```
+
 ## 扫描线
+
+### acwing 247 亚特兰蒂斯
+
+题意：在平面直角坐标系中给定 N 个矩形，求它们的面积并。
+
+![矩形面积并](https://cdn.acwing.com/media/article/image/2019/12/26/19_4acba44c27-%E6%97%A0%E6%A0%87%E9%A2%98.png)
+
+思路：
+
+用一根竖直直线从左到右扫过整个坐标系，那么直线上被并集图形覆盖的长度只会在每个矩形的左右边界处发生变化。整个并集图形的边界有 `2N` 个，即 `2N-1` 段，每一段在直线上覆盖的长度 `L` 是固定的，因此该段的面积就是 `L*该段宽度` ，各段面积之和即为所求。这条直线就称为扫描线，这种思路就称为扫描线法。
+
+具体做法是：
+
+1. 取出所有矩形的对角顶点坐标，设为 `(x1,y1)` 和 `(x2,y2)` 且 `x1<x2` 、`y1<y2` 。那么左边界可以记为 `(x1,y1,y2,1)` ，右边界记为 `(x2,y1,y2,-1)` 。将这 `2N` 个四元组按照 `x` 递增排序。
+2. 由于之后要维护 `y` 坐标，其范围可能很大且不是整数，所以要对 `y` 轴做离散化。设 `val(y)` 是坐标 `y` 离散化后的整数值， `raw(i)` 是整数 `i` 对应的原始值。
+3. 在离散化后，若有 `M` 个不同的 `y` 坐标值，分别对应 `raw(1),...,raw(M)` ，则扫描线至多被分成 `M-1` 段，其中第 `i` 段为区间 `[raw(i),raw(i+1)]` 。可以建立一个数组 `c` ，用 `c[i]` 记录扫描线上第 `i` 段被覆盖的次数，初始值为 0 。
+4. 逐一扫描排序后的四元组。设当前扫描到 `(x,y1,y2,k)` ，相当于即将覆盖区间 `[y1,y2]` ，就把 `c[val(y1)]` 到 c[val(y2)-1] 的值都加 `k` 。此时若下一个四元组的横坐标为 `x2` ，则扫描线从 `x` 扫到 `x2` 的过程中，覆盖的长度为 $total=\sum_{c[i]>0}(raw(i+1)-raw(i))$ ，即 `c` 中至少被覆盖一次的段的总长度。于是就让最终的答案 `ans+=(x2-x)*total` 。
+
+对于每个四元组，用朴素算法在 `c` 数组上进行统计，就可以在 $O(N^2)$ 内求出并集图形的面积。利用线段树，可以把时间复杂度优化到 $O(N\log N)$ 。
+
+[@Error_666](https://www.acwing.com/solution/content/19549/)：
+
+首先抽象目标：查询区间覆盖长度（区间查询）、修改区间覆盖次数（区间修改）。令 `t[p].len` 为当前节点代表的区间被覆盖的长度， `t[p].cnt` 为当前节点代表的区间被覆盖的次数。
+
+见到区间修改，第一反应是用 `pushdown` 操作，但是在此直接使用 `pushdown` 会有问题。
+
+```c++
+// 错误思路
+void upd(int p,int l,int r,int add) {
+    if(t[p].l>=l && t[p].r<=r) {
+        t[p].cnt+=add;
+        if(t[p].cnt>0) t[p].len=raw(t[p].r+1)-raw(t[p].l);
+        else t[p].len=t[p1].len+t[p2].len;
+        return;
+    }
+    ... ...
+}
+```
+
+如果 `t[p].cnt` 减到 `0` 时就会有问题。因为此时子节点的 `cnt` 也要减 `1` 。如果子节点的 `cnt` 变为 `0` ，它的 `len` 就发生变化了。可是直接写 `t[p].len=t[p1].len+t[p2].len` ，用到的 `t[p1].len` 是没更新过的。直观上可以这样改： 对子节点 `pushdown` 算出对应 `len` ，但发现子节点的子节点也可能有类似问题。所以一个 `t[p].cnt` 减到 `0` 就需要递归到最底层才能完成更新，这就退化成暴力了。
+
+#### 解法一：用特殊性质
+
+由于 `(x,y1,y2,1)` 和 `(x,y1,y2,-1)` 是成对出现的，所以不会出现父节点 `cnt>0` 子节点 `cnt=0` 时对子节点 `cnt-=1` 的情况。这种情况下，不下传信息，就使得当前区间被覆盖的次数，**跟其它节点无关**。也就是错误思路仅去掉 `pushdown` 操作，就是正确思路。
+
+举个例子，当出现 `t[p].cnt` 减为 `0` 时写 `t[p].len=t[p1].len+t[p2].len` 就是对的。因为 `t[p].cnt` 减到 `0` 跟 `t[p1].cnt` 没有关系，此时 `t[p1].len` 是最新值。
+
+```c++
+#define p1 (p<<1)
+#define p2 (p<<1|1)
+
+const int N=10005;
+
+// @Error_666: 以往的题当upd到叶节点时一定会return，
+// 但这一题到叶节点时还执行了pushUp。所以会访问到叶节点的下一层。
+// 我没有加特判，所以就开了16倍空间。
+struct T { int l,r,cnt; double len; } t[N*16];
+struct A { double x,y1,y2; int add; } a[N*2];
+int n,len;
+double lsh[N*2];
+
+bool cmp(A u,A v) {return u.x<v.x;}
+int val(double x) {return lower_bound(lsh+1,lsh+1+len,x)-lsh;}
+double raw(int x) {return lsh[x];}
+
+void pushUp(int p) {
+    t[p].len=(t[p].cnt>0)?raw(t[p].r+1)-raw(t[p].l):t[p1].len+t[p2].len;
+}
+
+void build(int p,int l,int r) {
+    t[p]={l,r,0,0};
+    if(l==r) return;
+    int mid=l+r>>1;
+    build(p1,l,mid),build(p2,mid+1,r);
+}
+
+void upd(int p,int l,int r,int add) {
+    if(t[p].l>=l && t[p].r<=r) {t[p].cnt+=add,pushUp(p); return;}
+    int mid=t[p].l+t[p].r>>1;
+    if(l<=mid) upd(p1,l,r,add); if(r>mid) upd(p2,l,r,add);
+    pushUp(p);
+}
+
+int main() {
+    for(int tim=1;;tim++) {
+        scanf("%d",&n);
+        if(!n) break;
+        printf("Test case #%d\n",tim);
+        for(int i=1;i<=n;i++) {
+            double x1,y1,x2,y2;
+            scanf("%lf%lf%lf%lf",&x1,&y1,&x2,&y2);
+            a[i]={x1,y1,y2,1},a[i+n]={x2,y1,y2,-1};
+            lsh[i]=y1,lsh[i+n]=y2;
+        }
+        n*=2;
+        sort(a+1,a+1+n,cmp),sort(lsh+1,lsh+1+n);
+        len=unique(lsh+1,lsh+1+n)-lsh-1;
+        build(1,1,len-1);
+        double ans=0;
+        upd(1,val(a[1].y1),val(a[1].y2)-1,a[1].add);
+        for(int i=2;i<=n;i++) {
+            ans+=t[1].len*(a[i].x-a[i-1].x);
+            upd(1,val(a[i].y1),val(a[i].y2)-1,a[i].add);
+        }
+        printf("Total explored area: %.2lf\n\n",ans);
+    }
+    return 0;
+}
+```
+
+#### 解法二：修改 pushdown 保证正确性
 
 ## 动态开点和线段树合并
