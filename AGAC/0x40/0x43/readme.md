@@ -423,9 +423,7 @@ void upd(int p,int l,int r,int add) {
 
 如果 `t[p].cnt` 减到 `0` 时就会有问题。因为此时子节点的 `cnt` 也要减 `1` 。如果子节点的 `cnt` 变为 `0` ，它的 `len` 就发生变化了。可是直接写 `t[p].len=t[p1].len+t[p2].len` ，用到的 `t[p1].len` 是没更新过的。直观上可以这样改： 对子节点 `pushdown` 算出对应 `len` ，但发现子节点的子节点也可能有类似问题。所以一个 `t[p].cnt` 减到 `0` 就需要递归到最底层才能完成更新，这就退化成暴力了。
 
-#### 解法一：用特殊性质
-
-由于 `(x,y1,y2,1)` 和 `(x,y1,y2,-1)` 是成对出现的，所以不会出现父节点 `cnt>0` 子节点 `cnt=0` 时对子节点 `cnt-=1` 的情况。这种情况下，不下传信息，就使得当前区间被覆盖的次数，**跟其它节点无关**。也就是错误思路仅去掉 `pushdown` 操作，就是正确思路。
+由于 `(x,y1,y2,1)` 和 `(x,y1,y2,-1)` 是成对出现的，所以不会出现父节点 `cnt>0` 子节点 `cnt=0` 时对子节点 `cnt-=1` 的情况。这种情况下，不下传信息，就使得当前区间被覆盖的次数，**跟其它节点无关**。也就是错误思路仅去掉 `pushdown` 操作，就是正确思路。时间复杂度 $O(N\log N)$ 。
 
 举个例子，当出现 `t[p].cnt` 减为 `0` 时写 `t[p].len=t[p1].len+t[p2].len` 就是对的。因为 `t[p].cnt` 减到 `0` 跟 `t[p1].cnt` 没有关系，此时 `t[p1].len` 是最新值。
 
@@ -447,6 +445,14 @@ bool cmp(A u,A v) {return u.x<v.x;}
 int val(double x) {return lower_bound(lsh+1,lsh+1+len,x)-lsh;}
 double raw(int x) {return lsh[x];}
 
+/*
+扫描线中的pushup函数与普通线段树中的pushup函数不同
+- 普通线段树pushup函数的功能：
+通过children节点的信息更新parent节点的信息：只在chilren节点发生变化时pushup
+- 扫描线pushup函数的功能：
+通过当前节点的cnt计算当前节点的len/通过children节点的len计算当前节点的len，
+所以当前节点的的cnt变化/children节点的信息变化时均要pushup
+*/
 void pushUp(int p) {
     t[p].len=(t[p].cnt>0)?raw(t[p].r+1)-raw(t[p].l):t[p1].len+t[p2].len;
 }
@@ -459,6 +465,7 @@ void build(int p,int l,int r) {
 }
 
 void upd(int p,int l,int r,int add) {
+    // 由于当前节点的的cnt变化 多了一步pushup操作
     if(t[p].l>=l && t[p].r<=r) {t[p].cnt+=add,pushUp(p); return;}
     int mid=t[p].l+t[p].r>>1;
     if(l<=mid) upd(p1,l,r,add); if(r>mid) upd(p2,l,r,add);
@@ -492,6 +499,9 @@ int main() {
 }
 ```
 
-#### 解法二：修改 pushdown 保证正确性
+这题也可以用 `pushdown` 做，但思路比较复杂，此处省略。
 
-## 动态开点和线段树合并
+### acwing 248 窗内的星星
+
+题意：在一个天空中有很多星星（看作平面直角坐标系），已知每颗星星的坐标和亮度（都是整数）。求用宽为 W、高为 H 的矩形窗口（W,H 为正整数）能圈住的星星的亮度总和最大是多少。（矩形边界上的星星不算）
+
