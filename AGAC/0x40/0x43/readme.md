@@ -503,14 +503,85 @@ int main() {
 
 ### luogu P1856 矩形周长并
 
-这题也需要使用扫描线的思想。首先考虑暴力做法：分别对 X 轴和 Y 轴做扫描线。以 X 轴为例，对矩形的左边线和右边线统计每个节点的覆盖次数（加一和减一）。如果到零就增加周长（加一时先判零，减一时后判零）。
+[@NCC79601](https://www.luogu.com.cn/article/9cuyuf44)：这题也需要使用扫描线的思想。首先考虑暴力做法：分别对 X 轴和 Y 轴做扫描线。以 X 轴为例，对矩形的左边线和右边线统计每个节点的覆盖次数（加一和减一）。如果到零就增加周长（加一时先判零，减一时后判零）。
 
 用线段树有两种做法：
 
 1. 分别对 X 轴和 Y 轴各建一颗线段树，然后用 acwing 247 的方式维护区间覆盖次数 `cnt` 和区间覆盖长度 `len` 。一个轴的答案是 $\sum_{segments} \Delta len$ ，即所有相邻两次修改的区间覆盖长度差之和。
 2. 只建一颗线段树，只对一个轴扫，如对 Y 轴扫，方法同 1 。另一个轴的计算方法是当前区间端点个数乘高度差。
 
-
+```c++
+struct Edge {
+	int left, right, height, flag;
+}e[10005];
+struct Tree {
+	int sum;  // 整个区间被整体覆盖了几次
+    int num;  // 整个区间被几条互不相交的线段覆盖，如 [1,3] + [4,5] 为 1 条
+    int len;  // 整个区间被覆盖的总长度
+	bool lflag, rflag;  // 左右"端点"是否被覆盖，用于维护 num 时的合并
+}tree[100005];
+int n,mx=-2147483647,mn=2147483647,edgenum,ans,last;
+void add_edge(int l,int r,int h,int f) {
+	e[++edgenum].left=l; e[edgenum].right=r;
+	e[edgenum].height=h; e[edgenum].flag=f;
+}
+bool cmp(Edge a,Edge b) {  // 先加边再删边
+	return a.height<b.height||a.height==b.height&&a.flag>b.flag;
+}
+void pushup(int o,int l,int r) {
+	if(tree[o].sum)	{  // 此区间之前被一整个线段覆盖过
+		tree[o].num=1; tree[o].len=r-l+1;
+		tree[o].lflag=tree[o].rflag=1;
+	}
+	else if(l==r) {  // 没全覆盖，且是叶节点
+		tree[o].len=0; tree[o].num=0;
+		tree[o].lflag=tree[o].rflag=0;
+	}
+	else {  // 没全覆盖，且不是叶节点
+		tree[o].len=tree[lson].len+tree[rson].len;
+		tree[o].num=tree[lson].num+tree[rson].num;
+        // 如果左子节点的右端点有覆盖，右子节点的左端点有覆盖，那么两线段会变成一线段
+		if(tree[lson].rflag&&tree[rson].lflag)tree[o].num--;
+		tree[o].lflag=tree[lson].lflag; tree[o].rflag=tree[rson].rflag;
+	}
+}
+void add(int o,int l,int r,int from,int to,int value) {
+    // 只有全覆盖才直接修改 sum
+	if(l>=from&&r<=to) { tree[o].sum+=value; pushup(o,l,r); return; }
+	if(from<=mid)add(lson,l,mid,from,to,value);
+	if(to>mid)add(rson,mid+1,r,from,to,value);
+	pushup(o,l,r);
+}
+int main() {
+	scanf("%d",&n);
+	for(int i=1;i<=n;i++) {
+		int x1,y1,x2,y2;
+		scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
+		mx=max(mx,max(x1,x2));
+		mn=min(mn,min(x1,x2));
+		add_edge(x1,x2,y1,1);
+		add_edge(x1,x2,y2,-1);
+	}
+	if(mn<=0) {  // 把坐标调整到正半轴
+		for(int i=1;i<=edgenum;i++) {
+			e[i].left+=-mn+1;
+			e[i].right+=-mn+1;
+		}
+		mx-=mn;
+	}
+	sort(e+1,e+edgenum+1,cmp);
+	for(int i=1;i<=edgenum;i++) {
+		add(1,1,mx,e[i].left,e[i].right-1,e[i].flag);  // 注意这里！！！加边有学问！！！
+		while(e[i].height==e[i+1].height&&e[i].flag==e[i+1].flag) {
+			i++; add(1,1,mx,e[i].left,e[i].right-1,e[i].flag);
+		}
+		ans+=abs(tree[1].len-last);	last=tree[1].len;
+		ans+=tree[1].num*2*(e[i+1].height-e[i].height);
+	}
+	printf("%d\n",ans);
+	return 0;
+}
+```
 
 ### acwing 248 窗内的星星
 
