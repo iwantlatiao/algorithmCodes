@@ -212,7 +212,7 @@ int main() {
 
 题意：一个岛上存在着两种居民，天神和恶魔。天神永远都不会说假话，而恶魔永远都不会说真话。岛上的每一个成员都有一个整数编号。现在有来自 n 个居民的信息，内容是其中一个居民询问另一个居民是否是天神。请你根据收集的回答判断各个居民的身份。
 
-[@小小_88](https://www.acwing.com/solution/content/107684/) 思路：
+[@小小_88](https://www.acwing.com/solution/content/107684/)、[@垫底抽风](https://www.acwing.com/activity/content/code/content/1697652/) 思路：
 
 首先，每次询问都会告诉我们一个信息：其中一个居民询问另一个居民是否是天神。
 
