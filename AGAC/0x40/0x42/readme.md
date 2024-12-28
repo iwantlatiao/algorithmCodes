@@ -328,9 +328,11 @@ for (int i = n; i; i--) {
             sum += c[ans+p[j]];
             ans += p[j];
         }
-    add(h[i] = ans + 1);
+    modify(h[i] = ans + 1);  // 维护 c[ans + 1] -= 1
 }
 ```
+
+另外根据树状数组的定义和题目要求，在初始化的时候可以写作 `for 1 to n, c[i] = lowbit(i);`
 
 ### Leetcode 673. LIS 计数
 
