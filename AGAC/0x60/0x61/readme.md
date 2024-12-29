@@ -140,3 +140,44 @@ int main() {
 
 ### Bellman-Ford 算法和 SPFA 算法
 
+Bellman–Ford 算法是一种基于松弛操作（其实 Dijkstra 算法也会用到松弛操作）的最短路算法，可以求出有负权的图的最短路，并可以对最短路不存在的情况进行判断。
+
+对于边 `(u, v, w)` ，松弛操作对应着 `dis[v] = min(dis[v], dis[u] + w)` 。这么做的目的是尝试用 `S->u->v` 这条路径（其中 `S->u` 已经是最短路）去更新 `v` 点的最短路。如果这条路径更优，就进行更新。
+
+Bellman–Ford 算法尝试对图上的每一条边进行松弛。每轮循环对所有边都进行一次松弛操作，当本次循环没有成功的松弛操作时算法停止。每次循环是 $O(m)$ 的，一轮松弛操作对最短路的贡献至少是一条边，所以最多执行 `n-1` 轮松弛操作。总的时间复杂度是 $O(nm)$ 。
+
+但还有一种情况，如果从起点出发，抵达一个负环时，松弛操作会无休止地进行下去。注意到前面的论证中已经说明了，对于最短路存在的图，松弛操作最多只会执行 `n-1` 轮，因此如果第 `n` 轮循环时仍然存在能松弛的边，说明从起点出发能够抵达一个负环。
+
+注意：以 S 点为源点跑 Bellman–Ford 算法时，如果没有给出存在负环的结果，只能说明从 S 点出发不能抵达一个负环，而不能说明图上不存在负环。因此如果需要判断整个图上是否存在负环，最严谨的做法是建立一个超级源点，向图上每个节点连一条权值为 0 的边，然后以超级源点为起点执行 Bellman–Ford 算法。
+
+```c++
+struct Edge {
+  int u, v, w;
+};
+vector<Edge> edge;
+
+int dis[MAXN], u, v, w;
+constexpr int INF = 0x3f3f3f3f;
+
+bool bellmanford(int n, int s) {
+  memset(dis, 0x3f, (n + 1) * sizeof(int));
+  dis[s] = 0;
+  bool flag = false;  // 判断一轮循环过程中是否发生松弛操作
+  for (int i = 1; i <= n; i++) {
+    flag = false;
+    for (int j = 0; j < edge.size(); j++) {
+      u = edge[j].u, v = edge[j].v, w = edge[j].w;
+      if (dis[u] == INF) continue;
+      // 无穷大与常数加减仍然为无穷大
+      // 因此最短路长度为 INF 的点引出的边不可能发生松弛操作
+      if (dis[v] > dis[u] + w) 
+        dis[v] = dis[u] + w,
+        flag = true;
+    }
+    // 没有可以松弛的边时就停止算法
+    if (!flag) break;
+  }
+  // 第 n 轮循环仍然可以松弛时说明 s 点可以抵达一个负环
+  return flag;
+}
+```
